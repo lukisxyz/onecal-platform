@@ -1,3 +1,4 @@
+import { createPublicClient } from "viem";
 import { anvil, base, baseSepolia } from "viem/chains";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import { coinbaseWallet, metaMask } from "wagmi/connectors";
@@ -24,6 +25,13 @@ export function getConfig() {
 		},
 	});
 }
+
+export const config = getConfig();
+
+export const publicClient = createPublicClient({
+	chain: anvil,
+	transport: http(),
+});
 
 declare module "wagmi" {
 	interface Register {

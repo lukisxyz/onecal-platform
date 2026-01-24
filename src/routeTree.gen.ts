@@ -9,24 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MentorSuccessRouteImport } from './routes/mentor.success'
 import { Route as MentorRegisterRouteImport } from './routes/mentor.register'
 
-const ComponentsRoute = ComponentsRouteImport.update({
-  id: '/components',
-  path: '/components',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MentorSuccessRoute = MentorSuccessRouteImport.update({
-  id: '/mentor/success',
-  path: '/mentor/success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentorRegisterRoute = MentorRegisterRouteImport.update({
@@ -37,59 +25,37 @@ const MentorRegisterRoute = MentorRegisterRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/components': typeof ComponentsRoute
   '/mentor/register': typeof MentorRegisterRoute
-  '/mentor/success': typeof MentorSuccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/components': typeof ComponentsRoute
   '/mentor/register': typeof MentorRegisterRoute
-  '/mentor/success': typeof MentorSuccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/components': typeof ComponentsRoute
   '/mentor/register': typeof MentorRegisterRoute
-  '/mentor/success': typeof MentorSuccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/components' | '/mentor/register' | '/mentor/success'
+  fullPaths: '/' | '/mentor/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/components' | '/mentor/register' | '/mentor/success'
-  id: '__root__' | '/' | '/components' | '/mentor/register' | '/mentor/success'
+  to: '/' | '/mentor/register'
+  id: '__root__' | '/' | '/mentor/register'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ComponentsRoute: typeof ComponentsRoute
   MentorRegisterRoute: typeof MentorRegisterRoute
-  MentorSuccessRoute: typeof MentorSuccessRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/components': {
-      id: '/components'
-      path: '/components'
-      fullPath: '/components'
-      preLoaderRoute: typeof ComponentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mentor/success': {
-      id: '/mentor/success'
-      path: '/mentor/success'
-      fullPath: '/mentor/success'
-      preLoaderRoute: typeof MentorSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentor/register': {
@@ -104,9 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ComponentsRoute: ComponentsRoute,
   MentorRegisterRoute: MentorRegisterRoute,
-  MentorSuccessRoute: MentorSuccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
