@@ -2,13 +2,33 @@ import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
 import { type State, WagmiProvider } from "wagmi";
-import { base, baseSepolia } from "wagmi/chains";
+import { anvil, base, baseSepolia } from "wagmi/chains";
 import { getConfig } from "@/lib/wagmi";
 
-const isDevelopment = import.meta.env.DEV;
-const isLocal = import.meta.env.MODE === "local";
+const chains = {
+	local: anvil,
+	development: baseSepolia,
+	production: base,
+};
 
-const primaryChain = isLocal ? baseSepolia : isDevelopment ? baseSepolia : base;
+type NodeEnv = keyof typeof chains;
+
+const getNodeEnv = (): NodeEnv => {
+	if (typeof window !== "undefined") {
+		const localStorageEnv = window.localStorage.getItem("NODE_ENV") as NodeEnv;
+		if (localStorageEnv && localStorageEnv in chains) {
+			return localStorageEnv;
+		}
+	}
+	const env = import.meta.env.VITE_NODE_ENV || process.env.NODE_ENV;
+	if (env && env in chains) {
+		return env as NodeEnv;
+	}
+	return "development";
+};
+
+const nodeEnv = getNodeEnv();
+const primaryChain = chains[nodeEnv];
 
 export function getContext() {
 	const [config] = useState(() => getConfig());

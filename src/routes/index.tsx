@@ -33,26 +33,7 @@ function GetStartedButton() {
 	);
 }
 
-function ViewProfileButton() {
-	const navigate = useNavigate();
-
-	return (
-		<Button
-			variant="outline"
-			size="lg"
-			className="w-full sm:w-auto text-lg rounded-full px-6 py-4 md:px-12 md:py-7 font-semibold min-h-12 touch-manipulation"
-			onClick={() => {
-				navigate({ to: "/mentor/profile/sample_mentor" });
-			}}
-		>
-			View Sample Profile
-		</Button>
-	);
-}
-
 function Index() {
-	const _navigate = useNavigate();
-
 	return (
 		<div className="min-h-screen">
 			{/* Skip to content link for accessibility */}
@@ -98,7 +79,6 @@ function Index() {
 
 					<div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 mb-8 md:mb-12 px-4 justify-center">
 						<GetStartedButton />
-						<ViewProfileButton />
 					</div>
 					<p className="text-xs sm:text-sm text-muted-foreground">
 						Professional scheduling with real commitment.
