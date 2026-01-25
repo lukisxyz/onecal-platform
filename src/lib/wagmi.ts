@@ -1,40 +1,27 @@
-import { createPublicClient } from "viem";
-import { anvil, base, baseSepolia } from "viem/chains";
-import { cookieStorage, createConfig, createStorage, http } from "wagmi";
-import { coinbaseWallet, metaMask } from "wagmi/connectors";
+import { type Config, createConfig, http } from "@wagmi/core";
+import { anvil } from "viem/chains";
+import { injected } from "wagmi/connectors";
 
-export function getConfig() {
-	return createConfig({
-		chains: [anvil, baseSepolia, base],
-		connectors: [
-			coinbaseWallet({
-				appName: "0xCAL",
-				preference: "smartWalletOnly",
-				version: "4",
-			}),
-			metaMask(),
-		],
-		storage: createStorage({
-			storage: cookieStorage,
-		}),
-		ssr: true,
-		transports: {
-			[anvil.id]: http(),
-			[baseSepolia.id]: http(),
-			[base.id]: http(),
-		},
-	});
-}
+export const chain = anvil;
 
-export const config = getConfig();
-
-export const publicClient = createPublicClient({
-	chain: anvil,
-	transport: http(),
-});
+export const config = createConfig({
+	chains: [chain],
+	connectors: [
+		/*coinbaseWallet({
+      appName: "0xCAL",
+      preference: "smartWalletOnly",
+      version: "4",
+    }),*/
+		injected(),
+	],
+	ssr: true,
+	transports: {
+		[chain.id]: http(),
+	},
+}) as Config;
 
 declare module "wagmi" {
 	interface Register {
-		config: ReturnType<typeof getConfig>;
+		config: typeof config;
 	}
 }

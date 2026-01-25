@@ -2,41 +2,7 @@ import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
 import { type State, WagmiProvider } from "wagmi";
-import { anvil, base, baseSepolia } from "wagmi/chains";
-import { getConfig } from "@/lib/wagmi";
-
-const chains = {
-	local: anvil,
-	development: baseSepolia,
-	production: base,
-};
-
-type NodeEnv = keyof typeof chains;
-
-const getNodeEnv = (): NodeEnv => {
-	if (typeof window !== "undefined") {
-		const localStorageEnv = window.localStorage.getItem("NODE_ENV") as NodeEnv;
-		if (localStorageEnv && localStorageEnv in chains) {
-			return localStorageEnv;
-		}
-	}
-	const env = import.meta.env.VITE_NODE_ENV || process.env.NODE_ENV;
-	if (env && env in chains) {
-		return env as NodeEnv;
-	}
-	return "development";
-};
-
-const nodeEnv = getNodeEnv();
-const primaryChain = chains[nodeEnv];
-
-export function getContext() {
-	const [config] = useState(() => getConfig());
-	return {
-		config,
-	};
-}
-
+import { chain, config } from "@/lib/wagmi";
 export function Providers({
 	children,
 	initialState,
@@ -44,7 +10,6 @@ export function Providers({
 	children: ReactNode;
 	initialState?: State;
 }) {
-	const [config] = useState(() => getConfig());
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({
@@ -64,7 +29,7 @@ export function Providers({
 				<OnchainKitProvider
 					projectId={import.meta.env.VITE_ONCHAINKIT_PROJECT_ID}
 					apiKey={import.meta.env.VITE_ONCHAINKIT_API_KEY}
-					chain={primaryChain}
+					chain={chain}
 				>
 					{children}
 				</OnchainKitProvider>

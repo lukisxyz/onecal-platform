@@ -10,11 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MentorRegisteredRouteImport } from './routes/mentor.registered'
 import { Route as MentorRegisterRouteImport } from './routes/mentor.register'
+import { Route as ApiTransactionStatusRouteImport } from './routes/api/transaction/status'
+import { Route as ApiRelayerWebhookRouteImport } from './routes/api/relayer.webhook'
+import { Route as ApiMentorRegisterRouteImport } from './routes/api/mentor.register'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorRegisteredRoute = MentorRegisteredRouteImport.update({
+  id: '/mentor/registered',
+  path: '/mentor/registered',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentorRegisterRoute = MentorRegisterRouteImport.update({
@@ -22,31 +31,81 @@ const MentorRegisterRoute = MentorRegisterRouteImport.update({
   path: '/mentor/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTransactionStatusRoute = ApiTransactionStatusRouteImport.update({
+  id: '/api/transaction/status',
+  path: '/api/transaction/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiRelayerWebhookRoute = ApiRelayerWebhookRouteImport.update({
+  id: '/api/relayer/webhook',
+  path: '/api/relayer/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMentorRegisterRoute = ApiMentorRegisterRouteImport.update({
+  id: '/api/mentor/register',
+  path: '/api/mentor/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/mentor/register': typeof MentorRegisterRoute
+  '/mentor/registered': typeof MentorRegisteredRoute
+  '/api/mentor/register': typeof ApiMentorRegisterRoute
+  '/api/relayer/webhook': typeof ApiRelayerWebhookRoute
+  '/api/transaction/status': typeof ApiTransactionStatusRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/mentor/register': typeof MentorRegisterRoute
+  '/mentor/registered': typeof MentorRegisteredRoute
+  '/api/mentor/register': typeof ApiMentorRegisterRoute
+  '/api/relayer/webhook': typeof ApiRelayerWebhookRoute
+  '/api/transaction/status': typeof ApiTransactionStatusRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/mentor/register': typeof MentorRegisterRoute
+  '/mentor/registered': typeof MentorRegisteredRoute
+  '/api/mentor/register': typeof ApiMentorRegisterRoute
+  '/api/relayer/webhook': typeof ApiRelayerWebhookRoute
+  '/api/transaction/status': typeof ApiTransactionStatusRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/mentor/register'
+  fullPaths:
+    | '/'
+    | '/mentor/register'
+    | '/mentor/registered'
+    | '/api/mentor/register'
+    | '/api/relayer/webhook'
+    | '/api/transaction/status'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/mentor/register'
-  id: '__root__' | '/' | '/mentor/register'
+  to:
+    | '/'
+    | '/mentor/register'
+    | '/mentor/registered'
+    | '/api/mentor/register'
+    | '/api/relayer/webhook'
+    | '/api/transaction/status'
+  id:
+    | '__root__'
+    | '/'
+    | '/mentor/register'
+    | '/mentor/registered'
+    | '/api/mentor/register'
+    | '/api/relayer/webhook'
+    | '/api/transaction/status'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MentorRegisterRoute: typeof MentorRegisterRoute
+  MentorRegisteredRoute: typeof MentorRegisteredRoute
+  ApiMentorRegisterRoute: typeof ApiMentorRegisterRoute
+  ApiRelayerWebhookRoute: typeof ApiRelayerWebhookRoute
+  ApiTransactionStatusRoute: typeof ApiTransactionStatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +117,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentor/registered': {
+      id: '/mentor/registered'
+      path: '/mentor/registered'
+      fullPath: '/mentor/registered'
+      preLoaderRoute: typeof MentorRegisteredRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mentor/register': {
       id: '/mentor/register'
       path: '/mentor/register'
       fullPath: '/mentor/register'
       preLoaderRoute: typeof MentorRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/transaction/status': {
+      id: '/api/transaction/status'
+      path: '/api/transaction/status'
+      fullPath: '/api/transaction/status'
+      preLoaderRoute: typeof ApiTransactionStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/relayer/webhook': {
+      id: '/api/relayer/webhook'
+      path: '/api/relayer/webhook'
+      fullPath: '/api/relayer/webhook'
+      preLoaderRoute: typeof ApiRelayerWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/mentor/register': {
+      id: '/api/mentor/register'
+      path: '/api/mentor/register'
+      fullPath: '/api/mentor/register'
+      preLoaderRoute: typeof ApiMentorRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -71,6 +158,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MentorRegisterRoute: MentorRegisterRoute,
+  MentorRegisteredRoute: MentorRegisteredRoute,
+  ApiMentorRegisterRoute: ApiMentorRegisterRoute,
+  ApiRelayerWebhookRoute: ApiRelayerWebhookRoute,
+  ApiTransactionStatusRoute: ApiTransactionStatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

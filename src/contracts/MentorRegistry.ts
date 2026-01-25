@@ -1,4 +1,4 @@
-export const mentorRegistryAbi = [
+export const MENTOR_REGISTRY_ABI = [
 	{
 		type: "function",
 		name: "ADDRESS_UPDATE_TYPEHASH",

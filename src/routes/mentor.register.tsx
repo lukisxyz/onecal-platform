@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useAccount, useConnect } from "wagmi";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useRegisterMentor } from "@/hooks/use-register-mentor";
+import { NetworkSwitchPrompt } from "@/components/network-switch-prompt";
 
 export const Route = createFileRoute("/mentor/register")({
 	component: MentorRegister,
@@ -18,18 +24,42 @@ export const Route = createFileRoute("/mentor/register")({
 });
 
 function MentorRegister() {
-	const onSubmit = () => {
-		// Empty function - no functionality needed
-		console.log("onSubmit called with empty data");
+	const [username, setUsername] = useState("");
+	const [mentorAddress, setMentorAddress] = useState("");
+	const { address, isConnected } = useAccount();
+	const { connect, connectors, isPending: isConnecting } = useConnect();
+
+	const { registerMentor, isLoading, error } = useRegisterMentor();
+
+	const isFormValid = username && mentorAddress && isConnected;
+
+	const handleConnectWallet = () => {
+		if (connectors.length > 0) {
+			connect({ connector: connectors[0] });
+		}
+	};
+
+	const handleUseConnectedAddress = () => {
+		if (address) {
+			setMentorAddress(address);
+		}
+	};
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!isFormValid) {
+			return;
+		}
+		await registerMentor({
+			username,
+			mentorAddress: mentorAddress as `0x${string}`,
+		});
 	};
 
 	return (
 		<div className="container max-w-2xl mx-auto py-12 px-4">
 			<div className="mb-8">
-				<Badge
-					variant="secondary"
-					className="mb-4 px-3 py-1.5 font-bold text-white bg-blue-700"
-				>
+				<Badge className="mb-4 px-3 py-1.5 font-bold">
 					Mentor Registration
 				</Badge>
 				<h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
@@ -41,14 +71,75 @@ function MentorRegister() {
 				</p>
 			</div>
 
+			<NetworkSwitchPrompt />
+
 			<Card>
 				<CardHeader>
 					<CardTitle>Mentor Information</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<Button onClick={onSubmit} className="w-full" size="lg">
-						Register as Mentor
-					</Button>
+					<form onSubmit={handleSubmit} className="space-y-6">
+						<div className="space-y-2">
+							<Label htmlFor="username">Username</Label>
+							<Input
+								id="username"
+								type="text"
+								placeholder="Enter your username"
+								value={username}
+								onChange={(e) => setUsername(e.target.value)}
+								required
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="address">Mentor Address</Label>
+							<div className="flex gap-2">
+								<Input
+									id="address"
+									type="text"
+									placeholder="0x..."
+									value={mentorAddress}
+									onChange={(e) => setMentorAddress(e.target.value)}
+									required
+									className="flex-1"
+								/>
+								{isConnected && address ? (
+									<Button
+										type="button"
+										variant="outline"
+										onClick={handleUseConnectedAddress}
+										disabled={!address}
+									>
+										Use Connected
+									</Button>
+								) : (
+									<Button
+										type="button"
+										variant="outline"
+										onClick={handleConnectWallet}
+										disabled={isConnecting}
+									>
+										{isConnecting ? "Connecting..." : "Connect Wallet"}
+									</Button>
+								)}
+							</div>
+						</div>
+
+						{error && (
+							<div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-3">
+								{error}
+							</div>
+						)}
+
+						<Button
+							type="submit"
+							className="w-full"
+							size="lg"
+							disabled={isLoading || !isFormValid}
+						>
+							{isLoading ? "Registering..." : "Register as Mentor"}
+						</Button>
+					</form>
 				</CardContent>
 			</Card>
 		</div>

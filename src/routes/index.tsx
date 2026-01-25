@@ -53,10 +53,7 @@ function Index() {
 				<div className="container max-w-4xl mx-auto text-center">
 					{/* Logo */}
 					<div className="mb-6 md:mb-8">
-						<Badge
-							variant="secondary"
-							className="text-sm md:text-lg px-3 py-1.5 md:px-4 md:py-2 font-bold text-white bg-black"
-						>
+						<Badge className="text-sm md:text-lg px-3 py-1.5 md:px-4 md:py-2 font-bold text-white bg-black">
 							0xCAL
 						</Badge>
 					</div>
