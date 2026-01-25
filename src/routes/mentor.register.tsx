@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,15 +33,15 @@ function MentorRegister() {
 
 	const isFormValid = username && mentorAddress && isConnected;
 
+	useEffect(() => {
+		if (address) {
+			setMentorAddress(address);
+		}
+	}, [address]);
+
 	const handleConnectWallet = () => {
 		if (connectors.length > 0) {
 			connect({ connector: connectors[0] });
-		}
-	};
-
-	const handleUseConnectedAddress = () => {
-		if (address) {
-			setMentorAddress(address);
 		}
 	};
 
@@ -93,26 +93,19 @@ function MentorRegister() {
 
 						<div className="space-y-2">
 							<Label htmlFor="address">Mentor Address</Label>
+							<p className="text-sm text-muted-foreground">
+								Automatically populated from your connected wallet
+							</p>
 							<div className="flex gap-2">
 								<Input
 									id="address"
 									type="text"
-									placeholder="0x..."
 									value={mentorAddress}
-									onChange={(e) => setMentorAddress(e.target.value)}
+									disabled
 									required
-									className="flex-1"
+									className="flex-1 bg-muted"
 								/>
-								{isConnected && address ? (
-									<Button
-										type="button"
-										variant="outline"
-										onClick={handleUseConnectedAddress}
-										disabled={!address}
-									>
-										Use Connected
-									</Button>
-								) : (
+								{!isConnected && (
 									<Button
 										type="button"
 										variant="outline"

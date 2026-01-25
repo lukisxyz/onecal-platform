@@ -1,20 +1,20 @@
 import type { Address } from "viem";
-import { MINIMAL_FORWARDER_ADDRESS } from "@/contracts/contract-address";
 import { chain } from "./wagmi";
-export { MENTOR_REGISTRY_ADDRESS } from "@/contracts/contract-address";
+import { MENTOR_REGISTRY_ADDRESS } from "@/contracts";
 
 export const domain = {
 	name: "MentorRegistry",
 	version: "1",
 	chainId: chain.id,
-	verifyingContract: MINIMAL_FORWARDER_ADDRESS,
+	verifyingContract: MENTOR_REGISTRY_ADDRESS,
 } as const;
 
 export const mentorRegisterTypes = {
 	MentorRegister: [
 		{ name: "username", type: "string" },
-		{ name: "mentorAddress", type: "address" },
+		{ name: "creatorAddress", type: "address" },
 		{ name: "nonce", type: "uint256" },
+		{ name: "deadline", type: "uint256" },
 	],
 } as const;
 
@@ -23,17 +23,20 @@ export const mentorAddressUpdateTypes = {
 		{ name: "username", type: "string" },
 		{ name: "newAddress", type: "address" },
 		{ name: "nonce", type: "uint256" },
+		{ name: "deadline", type: "uint256" },
 	],
 } as const;
 
 export type MentorRegister = {
 	username: string;
-	mentorAddress: Address;
+	creatorAddress: Address;
 	nonce: bigint;
+	deadline: bigint;
 };
 
 export type MentorAddressUpdate = {
 	username: string;
 	newAddress: Address;
 	nonce: bigint;
+	deadline: bigint;
 };

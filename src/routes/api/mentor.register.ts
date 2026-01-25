@@ -5,7 +5,7 @@ import {
 	Speed,
 } from "@openzeppelin/relayer-sdk";
 import { createFileRoute } from "@tanstack/react-router";
-import { MENTOR_REGISTRY_ADDRESS } from "@/lib/constants";
+import { MENTOR_REGISTRY_ADDRESS } from "@/contracts";
 import { relayerId, relayersApi } from "@/lib/relayer.server";
 
 function delay(ms: number) {
@@ -42,8 +42,7 @@ export const Route = createFileRoute("/api/mentor/register")({
 							relayerId,
 							txId,
 						);
-						const txData = txStatusRes.data
-							.data as EvmTransactionResponse;
+						const txData = txStatusRes.data.data as EvmTransactionResponse;
 
 						if (txData.hash) {
 							hash = txData.hash;
@@ -72,11 +71,34 @@ export const Route = createFileRoute("/api/mentor/register")({
 						confirmed_at,
 						created_at,
 					});
-				} catch (_err: unknown) {
-					return new Response(
-						JSON.stringify({ error: "Failed to register mentor" }),
-						{ status: 500 },
-					);
+				} catch (err: unknown) {
+					console.error("Mentor registration error:", err);
+
+					// Try to extract meaningful error message
+					let errorMessage = "Failed to register mentor";
+
+					if (err instanceof Error) {
+						// Check for common custom errors
+						if (
+							err.message.includes("AddressAlreadyExists") ||
+							err.message.includes("0x8baa579f")
+						) {
+							errorMessage = "This mentor address is already registered";
+						} else if (err.message.includes("UsernameAlreadyExists")) {
+							errorMessage = "This username is already taken";
+						} else if (err.message.includes("DeadlineExceeded")) {
+							errorMessage = "Transaction deadline exceeded. Please try again";
+						} else if (err.message.includes("InvalidSignature")) {
+							errorMessage = "Invalid signature. Please try again";
+						} else if (err.message) {
+							errorMessage = err.message;
+						}
+					}
+
+					return new Response(JSON.stringify({ error: errorMessage }), {
+						status: 500,
+						headers: { "Content-Type": "application/json" },
+					});
 				}
 			},
 		},

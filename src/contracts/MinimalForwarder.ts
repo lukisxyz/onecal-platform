@@ -1,68 +1,321 @@
 export const MINIMAL_FORWARDER_ABI = [
 	{
+		type: "constructor",
+		inputs: [],
+		stateMutability: "nonpayable",
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				name: "from",
+				type: "address",
+			},
+			{
+				indexed: true,
+				name: "to",
+				type: "address",
+			},
+			{
+				indexed: false,
+				name: "nonce",
+				type: "uint256",
+			},
+			{
+				indexed: false,
+				name: "success",
+				type: "bool",
+			},
+			{
+				indexed: false,
+				name: "returnData",
+				type: "bytes",
+			},
+		],
+		name: "MetaTransactionExecuted",
+		type: "event",
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				name: "from",
+				type: "address",
+			},
+			{
+				indexed: false,
+				name: "newNonce",
+				type: "uint256",
+			},
+		],
+		name: "NonceIncremented",
+		type: "event",
+	},
+	{
+		inputs: [],
+		name: "DOMAIN_SEPARATOR",
+		outputs: [
+			{
+				name: "",
+				type: "bytes32",
+			},
+		],
+		stateMutability: "view",
 		type: "function",
-		name: "execute",
+	},
+	{
 		inputs: [
 			{
 				name: "req",
 				type: "tuple",
-				internalType: "struct MinimalForwarder.ForwardRequest",
 				components: [
-					{ name: "from", type: "address", internalType: "address" },
-					{ name: "to", type: "address", internalType: "address" },
-					{ name: "value", type: "uint256", internalType: "uint256" },
-					{ name: "gas", type: "uint256", internalType: "uint256" },
-					{ name: "nonce", type: "uint256", internalType: "uint256" },
-					{ name: "data", type: "bytes", internalType: "bytes" },
-					{ name: "deadline", type: "uint256", internalType: "uint256" },
+					{
+						name: "from",
+						type: "address",
+					},
+					{
+						name: "to",
+						type: "address",
+					},
+					{
+						name: "value",
+						type: "uint256",
+					},
+					{
+						name: "gas",
+						type: "uint256",
+					},
+					{
+						name: "nonce",
+						type: "uint256",
+					},
+					{
+						name: "data",
+						type: "bytes",
+					},
+					{
+						name: "deadline",
+						type: "uint256",
+					},
 				],
+				type: "tuple",
 			},
-			{ name: "signature", type: "bytes", internalType: "bytes" },
+			{
+				name: "signature",
+				type: "bytes",
+			},
 		],
+		name: "execute",
 		outputs: [
-			{ name: "success", type: "bool", internalType: "bool" },
-			{ name: "returnData", type: "bytes", internalType: "bytes" },
+			{
+				name: "",
+				type: "bool",
+			},
+			{
+				name: "",
+				type: "bytes",
+			},
 		],
 		stateMutability: "payable",
-	},
-	{
 		type: "function",
-		name: "getDomainSeparator",
-		inputs: [],
-		outputs: [{ name: "", type: "bytes32", internalType: "bytes32" }],
-		stateMutability: "view",
 	},
 	{
-		type: "function",
-		name: "getNonce",
-		inputs: [{ name: "from", type: "address", internalType: "address" }],
-		outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-		stateMutability: "view",
-	},
-	{
-		type: "function",
-		name: "nonces",
-		inputs: [{ name: "", type: "address", internalType: "address" }],
-		outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
-		stateMutability: "view",
-	},
-	{
-		type: "event",
-		name: "ExecutedForwardRequest",
 		inputs: [
-			{ name: "from", type: "address", indexed: true, internalType: "address" },
-			{ name: "to", type: "address", indexed: true, internalType: "address" },
-			{ name: "success", type: "bool", indexed: false, internalType: "bool" },
 			{
-				name: "returnData",
-				type: "bytes",
-				indexed: false,
-				internalType: "bytes",
+				name: "requests",
+				type: "tuple[]",
+				components: [
+					{
+						name: "from",
+						type: "address",
+					},
+					{
+						name: "to",
+						type: "address",
+					},
+					{
+						name: "value",
+						type: "uint256",
+					},
+					{
+						name: "gas",
+						type: "uint256",
+					},
+					{
+						name: "nonce",
+						type: "uint256",
+					},
+					{
+						name: "data",
+						type: "bytes",
+					},
+					{
+						name: "deadline",
+						type: "uint256",
+					},
+				],
+				type: "tuple[]",
+			},
+			{
+				name: "signatures",
+				type: "bytes[]",
 			},
 		],
-		anonymous: false,
+		name: "executeBatch",
+		outputs: [
+			{
+				name: "successes",
+				type: "bool[]",
+			},
+			{
+				name: "results",
+				type: "bytes[]",
+			},
+		],
+		stateMutability: "payable",
+		type: "function",
 	},
-	{ type: "error", name: "DeadlineExceeded", inputs: [] },
-	{ type: "error", name: "ForwardCallFailed", inputs: [] },
-	{ type: "error", name: "ReplayAttack", inputs: [] },
+	{
+		inputs: [
+			{
+				name: "from",
+				type: "address",
+			},
+		],
+		name: "getNonce",
+		outputs: [
+			{
+				name: "",
+				type: "uint256",
+			},
+		],
+		stateMutability: "view",
+		type: "function",
+	},
+	{
+		inputs: [
+			{
+				name: "addresses",
+				type: "address[]",
+			},
+		],
+		name: "getNonces",
+		outputs: [
+			{
+				name: "",
+				type: "uint256[]",
+			},
+		],
+		stateMutability: "view",
+		type: "function",
+	},
+	{
+		inputs: [],
+		name: "incrementNonce",
+		outputs: [],
+		stateMutability: "nonpayable",
+		type: "function",
+	},
+	{
+		inputs: [
+			{
+				name: "req",
+				type: "tuple",
+				components: [
+					{
+						name: "from",
+						type: "address",
+					},
+					{
+						name: "to",
+						type: "address",
+					},
+					{
+						name: "value",
+						type: "uint256",
+					},
+					{
+						name: "gas",
+						type: "uint256",
+					},
+					{
+						name: "nonce",
+						type: "uint256",
+					},
+					{
+						name: "data",
+						type: "bytes",
+					},
+					{
+						name: "deadline",
+						type: "uint256",
+					},
+				],
+				type: "tuple",
+			},
+		],
+		name: "isExecuted",
+		outputs: [
+			{
+				name: "",
+				type: "bool",
+			},
+		],
+		stateMutability: "view",
+		type: "function",
+	},
+	{
+		inputs: [
+			{
+				name: "req",
+				type: "tuple",
+				components: [
+					{
+						name: "from",
+						type: "address",
+					},
+					{
+						name: "to",
+						type: "address",
+					},
+					{
+						name: "value",
+						type: "uint256",
+					},
+					{
+						name: "gas",
+						type: "uint256",
+					},
+					{
+						name: "nonce",
+						type: "uint256",
+					},
+					{
+						name: "data",
+						type: "bytes",
+					},
+					{
+						name: "deadline",
+						type: "uint256",
+					},
+				],
+				type: "tuple",
+			},
+			{
+				name: "signature",
+				type: "bytes",
+			},
+		],
+		name: "verify",
+		outputs: [
+			{
+				name: "",
+				type: "bool",
+			},
+		],
+		stateMutability: "view",
+		type: "function",
+	},
 ] as const;

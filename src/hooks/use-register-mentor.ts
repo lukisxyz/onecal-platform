@@ -5,13 +5,12 @@ import { type Address, encodeFunctionData } from "viem";
 import { useAccount } from "wagmi";
 import {
 	domain,
-	MENTOR_REGISTRY_ADDRESS,
 	type MentorRegister,
 	mentorRegisterTypes,
 } from "@/lib/constants";
-import { getPublicClient, getWalletClient, signTypedData } from "@wagmi/core";
-import { config } from "@/lib/wagmi";
-import { MENTOR_REGISTRY_ABI } from "@/contracts/MentorRegistry";
+import { MENTOR_REGISTRY_ADDRESS, MENTOR_REGISTRY_ABI } from "@/contracts";
+import { signTypedData } from "@wagmi/core";
+import { config, publicClient } from "@/lib/wagmi";
 
 type RegisterMentorParams = {
 	username: string;
@@ -37,34 +36,42 @@ export function useRegisterMentor(): HookReturn {
 				throw new Error("Wallet not connected");
 			}
 
-			const walletClient = getWalletClient(config);
-
-			if (!walletClient) {
-				throw new Error(
-					"Wallet client not available. Please ensure your wallet is connected and try again.",
-				);
-			}
-
 			setIsLoading(true);
 			setError(null);
 
 			try {
 				const { username, mentorAddress } = params;
 
-				const publicClient = getPublicClient(config);
+				if (mentorAddress !== userAddress) {
+					const errorMsg =
+						"Mentor address must match your connected wallet address";
+					setError(errorMsg);
+					toast.error(errorMsg);
+					throw new Error(errorMsg);
+				}
 
-				const nonce = await publicClient?.readContract({
+				const deadline = BigInt(Math.floor(Date.now() / 1000) + 600);
+
+				toast.info("Getting nonce...");
+
+				// 1. Get nonce from mentor registry
+				const nonce = await publicClient.readContract({
 					address: MENTOR_REGISTRY_ADDRESS,
 					abi: MENTOR_REGISTRY_ABI,
 					functionName: "getNonce",
 					args: [userAddress],
 				});
 
+				toast.success("Nonce retrieved");
+
 				const signed: MentorRegister = {
 					username,
-					mentorAddress,
+					creatorAddress: mentorAddress,
 					nonce: nonce as bigint,
+					deadline,
 				};
+
+				toast.info("Please sign the transaction in your wallet...");
 
 				const signature = await signTypedData(config, {
 					domain,
@@ -72,6 +79,8 @@ export function useRegisterMentor(): HookReturn {
 					primaryType: "MentorRegister",
 					message: signed,
 				});
+
+				toast.success("Transaction signed");
 
 				const sig = signature as `0x${string}`;
 				const r = sig.slice(0, 66);
@@ -84,12 +93,14 @@ export function useRegisterMentor(): HookReturn {
 					args: [
 						username,
 						mentorAddress,
-						BigInt(Math.floor(Date.now() / 1000) + 600),
+						deadline,
 						v,
 						r as `0x${string}`,
 						s as `0x${string}`,
 					],
 				});
+
+				toast.info("Submitting registration...");
 
 				const submitRes = await fetch("/api/mentor/register", {
 					method: "POST",
@@ -102,22 +113,13 @@ export function useRegisterMentor(): HookReturn {
 				});
 
 				if (!submitRes.ok) {
-					// Try to parse as JSON, but handle HTML error pages
-					let errorMessage = "Mentor registration failed";
-					try {
-						const err = await submitRes.json();
-						errorMessage = err?.error || errorMessage;
-					} catch {
-						// If response is not JSON, try to get text
-						const text = await submitRes.text();
-						if (text && !text.startsWith("<")) {
-							errorMessage = text;
-						}
-					}
-					throw new Error(errorMessage);
+					const err = await submitRes.json();
+					throw new Error(err?.error || "Transaction submission failed");
 				}
 
 				const result = await submitRes.json();
+
+				toast.success("Registration submitted successfully!");
 
 				if (!result.id) {
 					throw new Error("Transaction hash missing from response");

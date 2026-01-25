@@ -31,7 +31,7 @@ const statusConfig = {
 	},
 	failed: {
 		label: "Failed",
-		destructive: true,
+		variant: "default" as const,
 		icon: XCircle,
 		color: "text-red-600",
 	},
@@ -117,7 +117,9 @@ export function TransactionStatusDisplay({ hash, showHistory = true }: Props) {
 					{displayedStatus.statusReason && (
 						<div className="bg-red-50 border border-red-200 rounded p-3">
 							<div className="text-sm font-medium text-red-800">Reason:</div>
-							<div className="text-sm text-red-700">{displayedStatus.statusReason}</div>
+							<div className="text-sm text-red-700">
+								{displayedStatus.statusReason}
+							</div>
 						</div>
 					)}
 
@@ -126,7 +128,9 @@ export function TransactionStatusDisplay({ hash, showHistory = true }: Props) {
 							<div>
 								<div className="text-muted-foreground">Sent At</div>
 								<div className="font-medium">
-									{formatDistanceToNow(displayedStatus.sentAt, { addSuffix: true })}
+									{formatDistanceToNow(displayedStatus.sentAt, {
+										addSuffix: true,
+									})}
 								</div>
 							</div>
 						)}
@@ -134,7 +138,9 @@ export function TransactionStatusDisplay({ hash, showHistory = true }: Props) {
 							<div>
 								<div className="text-muted-foreground">Confirmed At</div>
 								<div className="font-medium">
-									{formatDistanceToNow(displayedStatus.confirmedAt, { addSuffix: true })}
+									{formatDistanceToNow(displayedStatus.confirmedAt, {
+										addSuffix: true,
+									})}
 								</div>
 							</div>
 						)}

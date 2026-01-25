@@ -1,0 +1,7 @@
+export { MENTOR_REGISTRY_ABI } from "./MentorRegistry";
+export { MINIMAL_FORWARDER_ABI } from "./MinimalForwarder";
+
+export const MENTOR_REGISTRY_ADDRESS =
+	"0x8F95039Fa0A26fbD6709d0E8a78c525b1d763f84";
+export const MINIMAL_FORWARDER_ADDRESS =
+	"0x33bDF47c1b1B3AB3a9737Ffe413138Dd2789DdB4";
