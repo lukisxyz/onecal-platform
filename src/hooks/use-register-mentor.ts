@@ -3,11 +3,7 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { type Address, encodeFunctionData } from "viem";
 import { useAccount } from "wagmi";
-import {
-	domain,
-	type MentorRegister,
-	mentorRegisterTypes,
-} from "@/lib/constants";
+import { domain as baseDomain, mentorRegisterTypes } from "@/lib/constants";
 import { MENTOR_REGISTRY_ADDRESS, MENTOR_REGISTRY_ABI } from "@/contracts";
 import { signTypedData } from "@wagmi/core";
 import { config, publicClient } from "@/lib/wagmi";
@@ -33,7 +29,10 @@ export function useRegisterMentor(): HookReturn {
 	const registerMentor = useCallback(
 		async (params: RegisterMentorParams) => {
 			if (!userAddress || !chainId) {
-				throw new Error("Wallet not connected");
+				const errorMsg = "Wallet not connected. Please connect your wallet.";
+				setError(errorMsg);
+				toast.error(errorMsg);
+				return;
 			}
 
 			setIsLoading(true);
@@ -42,19 +41,16 @@ export function useRegisterMentor(): HookReturn {
 			try {
 				const { username, mentorAddress } = params;
 
-				if (mentorAddress !== userAddress) {
-					const errorMsg =
-						"Mentor address must match your connected wallet address";
-					setError(errorMsg);
-					toast.error(errorMsg);
-					throw new Error(errorMsg);
+				if (mentorAddress.toLowerCase() !== userAddress.toLowerCase()) {
+					throw new Error(
+						"Mentor address must match your connected wallet address",
+					);
 				}
 
 				const deadline = BigInt(Math.floor(Date.now() / 1000) + 600);
 
-				toast.info("Getting nonce...");
+				toast.info("Checking network status and nonce...");
 
-				// 1. Get nonce from mentor registry
 				const nonce = await publicClient.readContract({
 					address: MENTOR_REGISTRY_ADDRESS,
 					abi: MENTOR_REGISTRY_ABI,
@@ -62,35 +58,36 @@ export function useRegisterMentor(): HookReturn {
 					args: [userAddress],
 				});
 
-				toast.success("Nonce retrieved");
+				const domain = {
+					...baseDomain,
+					chainId: chainId,
+				};
 
-				const signed: MentorRegister = {
+				const message = {
 					username,
 					creatorAddress: mentorAddress,
 					nonce: nonce as bigint,
 					deadline,
 				};
 
-				toast.info("Please sign the transaction in your wallet...");
+				toast.info("Signature request sent to your wallet...");
 
 				const signature = await signTypedData(config, {
 					domain,
 					types: mentorRegisterTypes,
 					primaryType: "MentorRegister",
-					message: signed,
+					message,
 				});
 
-				toast.success("Transaction signed");
-
-				const sig = signature as `0x${string}`;
+				toast.success("Signature received");
 
 				const data = encodeFunctionData({
 					abi: MENTOR_REGISTRY_ABI,
 					functionName: "registerMentorByRelayer",
-					args: [username, mentorAddress, deadline, sig],
+					args: [username, mentorAddress, deadline, signature],
 				});
 
-				toast.info("Submitting registration...");
+				toast.info("Sending transaction to relayer...");
 
 				const submitRes = await fetch("/api/mentor/register", {
 					method: "POST",
@@ -102,26 +99,24 @@ export function useRegisterMentor(): HookReturn {
 					}),
 				});
 
-				if (!submitRes.ok) {
-					const err = await submitRes.json();
-					throw new Error(err?.error || "Transaction submission failed");
-				}
-
 				const result = await submitRes.json();
 
-				toast.success("Registration submitted successfully!");
-
-				if (!result.id) {
-					throw new Error("Transaction hash missing from response");
+				if (!submitRes.ok) {
+					throw new Error(
+						result?.error || "Relayer failed to submit transaction",
+					);
 				}
 
-				nav({ to: `/mentor/registered?tx=${result.id}` });
-			} catch (err) {
-				const errorMessage =
-					err instanceof Error ? err.message : "Unknown error occurred";
+				toast.success("Registration successful!");
+
+				if (result.id) {
+					nav({ to: `/mentor/registered?tx=${result.id}` });
+				}
+			} catch (err: any) {
+				const errorMessage = err?.message || "An unexpected error occurred";
 				setError(errorMessage);
 				toast.error(errorMessage);
-				throw err;
+				console.error("Registration error:", err);
 			} finally {
 				setIsLoading(false);
 			}

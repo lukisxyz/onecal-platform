@@ -1,482 +1,258 @@
 export const MENTOR_REGISTRY_ABI = [
 	{
-		inputs: [],
-		stateMutability: "nonpayable",
-		type: "constructor",
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor",
 	},
 	{
-		inputs: [],
-		name: "AddressAlreadyExists",
-		type: "error",
+		"inputs": [],
+		"name": "ADDRESS_UPDATE_TYPEHASH",
+		"outputs": [{"internalType": "bytes32", "name": "", "type": "bytes32"}],
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "DeadlineExceeded",
-		type: "error",
+		"inputs": [],
+		"name": "MENTOR_REGISTER_TYPEHASH",
+		"outputs": [{"internalType": "bytes32", "name": "", "type": "bytes32"}],
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "ECDSAInvalidSignature",
-		type: "error",
-	},
-	{
-		inputs: [
-			{
-				name: "length",
-				type: "uint256",
-			},
+		"inputs": [],
+		"name": "eip712Domain",
+		"outputs": [
+			{"internalType": "bytes1", "name": "fields", "type": "bytes1"},
+			{"internalType": "string", "name": "name", "type": "string"},
+			{"internalType": "string", "name": "version", "type": "string"},
+			{"internalType": "uint256", "name": "chainId", "type": "uint256"},
+			{"internalType": "address", "name": "verifyingContract", "type": "address"},
+			{"internalType": "bytes32", "name": "salt", "type": "bytes32"},
+			{"internalType": "uint256[]", "name": "extensions", "type": "uint256[]"},
 		],
-		name: "ECDSAInvalidSignatureLength",
-		type: "error",
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		inputs: [
-			{
-				name: "s",
-				type: "bytes32",
-			},
+		"inputs": [{"internalType": "string", "name": "_username", "type": "string"}],
+		"name": "getMentor",
+		"outputs": [
+			{"internalType": "string", "name": "username", "type": "string"},
+			{"internalType": "address", "name": "currentAddress", "type": "address"},
+			{"internalType": "bool", "name": "exists", "type": "bool"},
 		],
-		name: "ECDSAInvalidSignatureS",
-		type: "error",
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "EmptyUsername",
-		type: "error",
-	},
-	{
-		inputs: [],
-		name: "InvalidShortString",
-		type: "error",
-	},
-	{
-		inputs: [],
-		name: "InvalidSignature",
-		type: "error",
-	},
-	{
-		inputs: [],
-		name: "InvalidUsernameFormat",
-		type: "error",
-	},
-	{
-		inputs: [],
-		name: "MentorDoesNotExist",
-		type: "error",
-	},
-	{
-		inputs: [],
-		name: "NonceMismatch",
-		type: "error",
-	},
-	{
-		inputs: [
-			{
-				name: "str",
-				type: "string",
-			},
+		"inputs": [{"internalType": "address", "name": "_mentorAddress", "type": "address"}],
+		"name": "getMentorByAddress",
+		"outputs": [
+			{"internalType": "string", "name": "username", "type": "string"},
+			{"internalType": "address", "name": "mentorAddr", "type": "address"},
+			{"internalType": "bool", "name": "exists", "type": "bool"},
 		],
-		name: "StringTooLong",
-		type: "error",
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "Unauthorized",
-		type: "error",
+		"inputs": [{"internalType": "address", "name": "_user", "type": "address"}],
+		"name": "getNonce",
+		"outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "UsernameAlreadyExists",
-		type: "error",
+		"inputs": [{"internalType": "address[]", "name": "addresses", "type": "address[]"}],
+		"name": "getNonces",
+		"outputs": [{"internalType": "uint256[]", "name": "noncesArray", "type": "uint256[]"}],
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		anonymous: false,
-		inputs: [
-			{
-				indexed: true,
-				name: "username",
-				type: "string",
-			},
-			{
-				indexed: true,
-				name: "oldAddress",
-				type: "address",
-			},
-			{
-				indexed: true,
-				name: "newAddress",
-				type: "address",
-			},
-		],
-		name: "AddressUpdated",
-		type: "event",
+		"inputs": [{"internalType": "address", "name": "", "type": "address"}],
+		"name": "mentorAddressToUsername",
+		"outputs": [{"internalType": "string", "name": "", "type": "string"}],
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		anonymous: false,
-		inputs: [
-			{
-				indexed: true,
-				name: "username",
-				type: "string",
-			},
-			{
-				indexed: true,
-				name: "oldAddress",
-				type: "address",
-			},
-			{
-				indexed: true,
-				name: "newAddress",
-				type: "address",
-			},
-			{
-				indexed: false,
-				name: "relayer",
-				type: "address",
-			},
+		"inputs": [{"internalType": "string", "name": "", "type": "string"}],
+		"name": "mentors",
+		"outputs": [
+			{"internalType": "string", "name": "username", "type": "string"},
+			{"internalType": "address", "name": "currentAddress", "type": "address"},
 		],
-		name: "AddressUpdatedByRelayer",
-		type: "event",
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		anonymous: false,
-		inputs: [],
-		name: "EIP712DomainChanged",
-		type: "event",
+		"inputs": [{"internalType": "address", "name": "", "type": "address"}],
+		"name": "nonces",
+		"outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		anonymous: false,
-		inputs: [
-			{
-				indexed: true,
-				name: "username",
-				type: "string",
-			},
-			{
-				indexed: true,
-				name: "mentorAddress",
-				type: "address",
-			},
+		"inputs": [
+			{"internalType": "string", "name": "_username", "type": "string"},
+			{"internalType": "address", "name": "_mentorAddress", "type": "address"},
 		],
-		name: "MentorRegistered",
-		type: "event",
+		"name": "registerMentor",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function",
 	},
 	{
-		anonymous: false,
-		inputs: [
-			{
-				indexed: true,
-				name: "username",
-				type: "string",
-			},
-			{
-				indexed: true,
-				name: "mentorAddress",
-				type: "address",
-			},
-			{
-				indexed: false,
-				name: "relayer",
-				type: "address",
-			},
+		"inputs": [
+			{"internalType": "string", "name": "_username", "type": "string"},
+			{"internalType": "address", "name": "_mentorAddress", "type": "address"},
+			{"internalType": "uint256", "name": "_deadline", "type": "uint256"},
+			{"internalType": "bytes", "name": "signature", "type": "bytes"},
 		],
-		name: "MentorRegisteredByRelayer",
-		type: "event",
+		"name": "registerMentorByRelayer",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "ADDRESS_UPDATE_TYPEHASH",
-		outputs: [
-			{
-				name: "",
-				type: "bytes32",
-			},
+		"inputs": [
+			{"internalType": "string", "name": "_username", "type": "string"},
+			{"internalType": "address", "name": "_newAddress", "type": "address"},
 		],
-		stateMutability: "view",
-		type: "function",
+		"name": "updateAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "MENTOR_REGISTER_TYPEHASH",
-		outputs: [
-			{
-				name: "",
-				type: "bytes32",
-			},
+		"inputs": [
+			{"internalType": "string", "name": "_username", "type": "string"},
+			{"internalType": "address", "name": "_newAddress", "type": "address"},
+			{"internalType": "uint256", "name": "_deadline", "type": "uint256"},
+			{"internalType": "bytes", "name": "signature", "type": "bytes"},
 		],
-		stateMutability: "view",
-		type: "function",
+		"name": "updateAddressByRelayer",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function",
 	},
 	{
-		inputs: [],
-		name: "eip712Domain",
-		outputs: [
-			{
-				name: "fields",
-				type: "bytes1",
-			},
-			{
-				name: "name",
-				type: "string",
-			},
-			{
-				name: "version",
-				type: "string",
-			},
-			{
-				name: "chainId",
-				type: "uint256",
-			},
-			{
-				name: "verifyingContract",
-				type: "address",
-			},
-			{
-				name: "salt",
-				type: "bytes32",
-			},
-			{
-				name: "extensions",
-				type: "uint256[]",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"inputs": [{"internalType": "string", "name": "_username", "type": "string"}],
+		"name": "usernameExists",
+		"outputs": [{"internalType": "bool", "name": "exists", "type": "bool"}],
+		"stateMutability": "view",
+		"type": "function",
 	},
 	{
-		inputs: [
-			{
-				name: "_username",
-				type: "string",
-			},
+		"anonymous": false,
+		"inputs": [
+			{"indexed": true, "internalType": "string", "name": "username", "type": "string"},
+			{"indexed": true, "internalType": "address", "name": "oldAddress", "type": "address"},
+			{"indexed": true, "internalType": "address", "name": "newAddress", "type": "address"},
 		],
-		name: "getMentor",
-		outputs: [
-			{
-				name: "username",
-				type: "string",
-			},
-			{
-				name: "currentAddress",
-				type: "address",
-			},
-			{
-				name: "exists",
-				type: "bool",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"name": "AddressUpdated",
+		"type": "event",
 	},
 	{
-		inputs: [
-			{
-				name: "_mentorAddress",
-				type: "address",
-			},
+		"anonymous": false,
+		"inputs": [
+			{"indexed": true, "internalType": "string", "name": "username", "type": "string"},
+			{"indexed": true, "internalType": "address", "name": "oldAddress", "type": "address"},
+			{"indexed": true, "internalType": "address", "name": "newAddress", "type": "address"},
+			{"indexed": false, "internalType": "address", "name": "relayer", "type": "address"},
 		],
-		name: "getMentorByAddress",
-		outputs: [
-			{
-				name: "username",
-				type: "string",
-			},
-			{
-				name: "mentorAddr",
-				type: "address",
-			},
-			{
-				name: "exists",
-				type: "bool",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"name": "AddressUpdatedByRelayer",
+		"type": "event",
 	},
 	{
-		inputs: [
-			{
-				name: "_address",
-				type: "address",
-			},
-		],
-		name: "getNonce",
-		outputs: [
-			{
-				name: "nonce",
-				type: "uint256",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"anonymous": false,
+		"inputs": [],
+		"name": "EIP712DomainChanged",
+		"type": "event",
 	},
 	{
-		inputs: [
-			{
-				name: "addresses",
-				type: "address[]",
-			},
+		"anonymous": false,
+		"inputs": [
+			{"indexed": true, "internalType": "string", "name": "username", "type": "string"},
+			{"indexed": true, "internalType": "address", "name": "mentorAddress", "type": "address"},
 		],
-		name: "getNonces",
-		outputs: [
-			{
-				name: "",
-				type: "uint256[]",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"name": "MentorRegistered",
+		"type": "event",
 	},
 	{
-		inputs: [
-			{
-				name: "",
-				type: "address",
-			},
+		"anonymous": false,
+		"inputs": [
+			{"indexed": true, "internalType": "string", "name": "username", "type": "string"},
+			{"indexed": true, "internalType": "address", "name": "mentorAddress", "type": "address"},
+			{"indexed": false, "internalType": "address", "name": "relayer", "type": "address"},
 		],
-		name: "mentorAddressToUsername",
-		outputs: [
-			{
-				name: "",
-				type: "string",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"name": "MentorRegisteredByRelayer",
+		"type": "event",
 	},
 	{
-		inputs: [
-			{
-				name: "",
-				type: "string",
-			},
-		],
-		name: "mentors",
-		outputs: [
-			{
-				name: "username",
-				type: "string",
-			},
-			{
-				name: "currentAddress",
-				type: "address",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"inputs": [],
+		"name": "AddressAlreadyExists",
+		"type": "error",
 	},
 	{
-		inputs: [
-			{
-				name: "",
-				type: "address",
-			},
-		],
-		name: "nonces",
-		outputs: [
-			{
-				name: "",
-				type: "uint256",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"inputs": [],
+		"name": "DeadlineExceeded",
+		"type": "error",
 	},
 	{
-		inputs: [
-			{
-				name: "_username",
-				type: "string",
-			},
-			{
-				name: "_mentorAddress",
-				type: "address",
-			},
-		],
-		name: "registerMentor",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"inputs": [],
+		"name": "ECDSAInvalidSignature",
+		"type": "error",
 	},
 	{
-		inputs: [
-			{
-				name: "_username",
-				type: "string",
-			},
-			{
-				name: "_mentorAddress",
-				type: "address",
-			},
-			{
-				name: "_deadline",
-				type: "uint256",
-			},
-			{
-				name: "signature",
-				type: "bytes",
-			},
-		],
-		name: "registerMentorByRelayer",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"inputs": [{"internalType": "uint256", "name": "length", "type": "uint256"}],
+		"name": "ECDSAInvalidSignatureLength",
+		"type": "error",
 	},
 	{
-		inputs: [
-			{
-				name: "_username",
-				type: "string",
-			},
-			{
-				name: "_newAddress",
-				type: "address",
-			},
-		],
-		name: "updateAddress",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"inputs": [{"internalType": "bytes32", "name": "s", "type": "bytes32"}],
+		"name": "ECDSAInvalidSignatureS",
+		"type": "error",
 	},
 	{
-		inputs: [
-			{
-				name: "_username",
-				type: "string",
-			},
-			{
-				name: "_newAddress",
-				type: "address",
-			},
-			{
-				name: "_deadline",
-				type: "uint256",
-			},
-			{
-				name: "signature",
-				type: "bytes",
-			},
-		],
-		name: "updateAddressByRelayer",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"inputs": [],
+		"name": "EmptyUsername",
+		"type": "error",
 	},
 	{
-		inputs: [
-			{
-				name: "_username",
-				type: "string",
-			},
-		],
-		name: "usernameExists",
-		outputs: [
-			{
-				name: "exists",
-				type: "bool",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"inputs": [],
+		"name": "InvalidShortString",
+		"type": "error",
+	},
+	{
+		"inputs": [],
+		"name": "InvalidSignature",
+		"type": "error",
+	},
+	{
+		"inputs": [],
+		"name": "InvalidUsernameFormat",
+		"type": "error",
+	},
+	{
+		"inputs": [],
+		"name": "MentorDoesNotExist",
+		"type": "error",
+	},
+	{
+		"inputs": [{"internalType": "string", "name": "str", "type": "string"}],
+		"name": "StringTooLong",
+		"type": "error",
+	},
+	{
+		"inputs": [],
+		"name": "Unauthorized",
+		"type": "error",
+	},
+	{
+		"inputs": [],
+		"name": "UsernameAlreadyExists",
+		"type": "error",
 	},
 ];
