@@ -413,16 +413,8 @@ export const MENTOR_REGISTRY_ABI = [
 				type: "uint256",
 			},
 			{
-				name: "_v",
-				type: "uint8",
-			},
-			{
-				name: "_r",
-				type: "bytes32",
-			},
-			{
-				name: "_s",
-				type: "bytes32",
+				name: "signature",
+				type: "bytes",
 			},
 		],
 		name: "registerMentorByRelayer",
@@ -461,16 +453,8 @@ export const MENTOR_REGISTRY_ABI = [
 				type: "uint256",
 			},
 			{
-				name: "_v",
-				type: "uint8",
-			},
-			{
-				name: "_r",
-				type: "bytes32",
-			},
-			{
-				name: "_s",
-				type: "bytes32",
+				name: "signature",
+				type: "bytes",
 			},
 		],
 		name: "updateAddressByRelayer",

@@ -83,21 +83,11 @@ export function useRegisterMentor(): HookReturn {
 				toast.success("Transaction signed");
 
 				const sig = signature as `0x${string}`;
-				const r = sig.slice(0, 66);
-				const s = `0x${sig.slice(66, 130)}`;
-				const v = parseInt(sig.slice(130, 132), 16);
 
 				const data = encodeFunctionData({
 					abi: MENTOR_REGISTRY_ABI,
 					functionName: "registerMentorByRelayer",
-					args: [
-						username,
-						mentorAddress,
-						deadline,
-						v,
-						r as `0x${string}`,
-						s as `0x${string}`,
-					],
+					args: [username, mentorAddress, deadline, sig],
 				});
 
 				toast.info("Submitting registration...");
