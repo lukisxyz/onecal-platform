@@ -100,7 +100,6 @@ export const MINIMAL_FORWARDER_ABI = [
 						type: "uint256",
 					},
 				],
-				type: "tuple",
 			},
 			{
 				name: "signature",
@@ -156,7 +155,6 @@ export const MINIMAL_FORWARDER_ABI = [
 						type: "uint256",
 					},
 				],
-				type: "tuple[]",
 			},
 			{
 				name: "signatures",
@@ -253,7 +251,6 @@ export const MINIMAL_FORWARDER_ABI = [
 						type: "uint256",
 					},
 				],
-				type: "tuple",
 			},
 		],
 		name: "isExecuted",
@@ -301,7 +298,6 @@ export const MINIMAL_FORWARDER_ABI = [
 						type: "uint256",
 					},
 				],
-				type: "tuple",
 			},
 			{
 				name: "signature",
