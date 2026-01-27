@@ -1,25 +1,11 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
-import * as schemas from "@/db/schemas";
-import fs from "fs";
-import path from "path";
+import { config } from "dotenv";
+import { drizzle } from "drizzle-orm/libsql";
 
-// Ensure database directory exists
-const dbPath = (process.env.DATABASE_URL || "file:./db/local.db").replace("file:", "");
-const dbDir = path.dirname(dbPath);
+config({ path: ".env" });
 
-if (!fs.existsSync(dbDir)) {
-	fs.mkdirSync(dbDir, { recursive: true });
-}
-
-const sqlite = new Database(dbPath);
-
-// Enable WAL mode for better concurrency
-sqlite.pragma("journal_mode = WAL");
-
-export const db = drizzle(sqlite, {
-	schema: schemas,
+export const db = drizzle({
+  connection: {
+    url: process.env.TURSO_CONNECTION_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
+  },
 });
-
-export { sqlite };
-
