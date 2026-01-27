@@ -8,11 +8,11 @@ export const chain = baseSepolia;
 export const config = createConfig({
 	chains: [chain],
 	connectors: [
-		coinbaseWallet({
-			appName: "0xCAL",
-			preference: "eoaOnly",
-			version: "4",
-		}),
+		/*coinbaseWallet({
+      appName: "0xCAL",
+      preference: "all",
+      version: "4",
+    }),*/
 		injected(),
 	],
 	ssr: true,
