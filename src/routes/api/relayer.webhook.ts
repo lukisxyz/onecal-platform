@@ -47,10 +47,6 @@ export const Route = createFileRoute("/api/relayer/webhook")({
             ) {
               const payload = webhookData.payload;
 
-              // Parse timestamps
-              const parseTimestamp = (timestamp: string | null) =>
-                timestamp ? new Date(timestamp) : null;
-
               // Insert or update transaction status
               await db
                 .insert(transactionStatuses)
@@ -59,9 +55,9 @@ export const Route = createFileRoute("/api/relayer/webhook")({
                   transactionId: payload.id,
                   hash: payload.hash,
                   status: payload.status,
-                  createdAt: parseTimestamp(payload.created_at),
-                  sentAt: parseTimestamp(payload.sent_at),
-                  confirmedAt: parseTimestamp(payload.confirmed_at),
+                  createdAt: payload.created_at ? new Date(payload.created_at) : new Date(),
+                  sentAt: payload.sent_at ? new Date(payload.sent_at) : undefined,
+                  confirmedAt: payload.confirmed_at ? new Date(payload.confirmed_at) : undefined,
                   gasPrice: payload.gas_price,
                   gasLimit: payload.gas_limit,
                   nonce: payload.nonce,
@@ -80,8 +76,8 @@ export const Route = createFileRoute("/api/relayer/webhook")({
                   target: transactionStatuses.id,
                   set: {
                     status: payload.status,
-                    sentAt: parseTimestamp(payload.sent_at),
-                    confirmedAt: parseTimestamp(payload.confirmed_at),
+                    sentAt: payload.sent_at ? new Date(payload.sent_at) : undefined,
+                    confirmedAt: payload.confirmed_at ? new Date(payload.confirmed_at) : undefined,
                     eventTimestamp: new Date(webhookData.timestamp),
                   },
                 });

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { db } from "@/lib/db";
 import { transactionStatuses } from "@/db/schemas";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 export const Route = createFileRoute("/api/transaction/status")({
 	server: {
