@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,6 +28,7 @@ function MentorRegister() {
 	const [mentorAddress, setMentorAddress] = useState("");
 	const { address, isConnected } = useAccount();
 	const { connect, connectors, isPending: isConnecting } = useConnect();
+	const { disconnect } = useDisconnect();
 
 	const { registerMentor, isLoading, error } = useRegisterMentor();
 
@@ -43,6 +44,15 @@ function MentorRegister() {
 		if (connectors.length > 0) {
 			connect({ connector: connectors[0] });
 		}
+	};
+
+	const handleSwitchWallet = () => {
+		disconnect();
+		setTimeout(() => {
+			if (connectors.length > 0) {
+				connect({ connector: connectors[0] });
+			}
+		}, 100);
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -105,7 +115,7 @@ function MentorRegister() {
 									required
 									className="flex-1 bg-muted"
 								/>
-								{!isConnected && (
+								{!isConnected ? (
 									<Button
 										type="button"
 										variant="outline"
@@ -113,6 +123,15 @@ function MentorRegister() {
 										disabled={isConnecting}
 									>
 										{isConnecting ? "Connecting..." : "Connect Wallet"}
+									</Button>
+								) : (
+									<Button
+										type="button"
+										variant="outline"
+										onClick={handleSwitchWallet}
+										disabled={isLoading}
+									>
+										Switch Wallet
 									</Button>
 								)}
 							</div>

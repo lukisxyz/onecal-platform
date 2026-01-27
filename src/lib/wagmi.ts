@@ -10,7 +10,7 @@ export const config = createConfig({
 	connectors: [
 		coinbaseWallet({
 			appName: "0xCAL",
-			preference: "smartWalletOnly",
+			preference: "eoaOnly",
 			version: "4",
 		}),
 		injected(),
