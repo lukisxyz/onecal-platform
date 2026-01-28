@@ -1,5 +1,13 @@
-import { pgTable, text, timestamp, integer, index, uuid, varchar } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import {
+	index,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+	varchar,
+} from "drizzle-orm/pg-core";
 
 // Transaction status updates from webhooks
 export const transactionStatuses = pgTable(
@@ -30,11 +38,13 @@ export const transactionStatuses = pgTable(
 	},
 	(table) => {
 		return {
-			transactionIdIdx: index("idx_transaction_statuses_transaction_id").on(table.transactionId),
+			transactionIdIdx: index("idx_transaction_statuses_transaction_id").on(
+				table.transactionId,
+			),
 			hashIdx: index("idx_transaction_statuses_hash").on(table.hash),
 			statusIdx: index("idx_transaction_statuses_status").on(table.status),
 		};
-	}
+	},
 );
 
 // Mentor profiles stored off-chain (full name, bio, timezone)
@@ -58,9 +68,15 @@ export const mentorProfiles = pgTable(
 	(table) => {
 		return {
 			usernameIdx: index("idx_mentor_profiles_username").on(table.username),
-			walletAddressIdx: index("idx_mentor_profiles_wallet_address").on(table.walletAddress),
-			usernameActiveIdx: index("idx_mentor_profiles_username_active").on(table.username).where(sql`${table.deletedAt} IS NULL`),
-			walletAddressActiveIdx: index("idx_mentor_profiles_wallet_address_active").on(table.walletAddress).where(sql`${table.deletedAt} IS NULL`),
+			walletAddressIdx: index("idx_mentor_profiles_wallet_address").on(
+				table.walletAddress,
+			),
+			usernameActiveIdx: index("idx_mentor_profiles_username_active")
+				.on(table.username)
+				.where(sql`${table.deletedAt} IS NULL`),
+			walletAddressActiveIdx: index("idx_mentor_profiles_wallet_address_active")
+				.on(table.walletAddress)
+				.where(sql`${table.deletedAt} IS NULL`),
 		};
-	}
+	},
 );

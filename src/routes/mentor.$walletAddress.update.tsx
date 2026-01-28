@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Loader2, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
 	SelectContent,
@@ -13,14 +13,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Loader2, User } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import { Textarea } from "@/components/ui/textarea";
+import { TIMEZONES } from "@/constants/timezones";
+import { useMentorUsernameFromBlockchain } from "@/hooks/use-mentor-username-blockchain";
 import {
 	useMentorProfile,
 	useUpdateMentorProfile,
 } from "@/hooks/use-update-mentor-profile";
-import { useMentorUsernameFromBlockchain } from "@/hooks/use-mentor-username-blockchain";
-import { TIMEZONES } from "@/constants/timezones";
 
 export const Route = createFileRoute("/mentor/$walletAddress/update")({
 	component: MentorUpdateProfile,

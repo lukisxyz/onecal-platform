@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Clock, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { useTransactionStatus } from "@/hooks/use-transaction-status";
+import { CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTransactionStatus } from "@/hooks/use-transaction-status";
 
 type Props = {
 	hash: string;
@@ -177,6 +177,7 @@ export function TransactionStatusDisplay({ hash, showHistory = true }: Props) {
 
 								return (
 									<button
+										type="button"
 										key={status.id}
 										onClick={() => setSelectedStatusIndex(index)}
 										className={`w-full text-left flex items-start gap-3 p-3 rounded border transition-colors ${

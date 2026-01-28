@@ -30,7 +30,20 @@ type TransactionStatusResponse = {
 	count: number;
 };
 
-export function useTransactionStatus(hash: string | null, options?: { refetchInterval?: number }) {
+type TransactionStatusApiResponse = Omit<
+	TransactionStatus,
+	"createdAt" | "sentAt" | "confirmedAt" | "eventTimestamp"
+> & {
+	createdAt: string | null;
+	sentAt: string | null;
+	confirmedAt: string | null;
+	eventTimestamp: string;
+};
+
+export function useTransactionStatus(
+	hash: string | null,
+	options?: { refetchInterval?: number },
+) {
 	const queryClient = useQueryClient();
 
 	const query = useQuery<TransactionStatusResponse>({
@@ -52,12 +65,16 @@ export function useTransactionStatus(hash: string | null, options?: { refetchInt
 			const data = await response.json();
 
 			// Transform ISO strings back to Date objects
-			const transformStatus = (status: any) => ({
+			const transformStatus = (
+				status: TransactionStatusApiResponse,
+			): TransactionStatus => ({
 				...status,
 				createdAt: status.createdAt ? new Date(status.createdAt) : null,
 				sentAt: status.sentAt ? new Date(status.sentAt) : null,
 				confirmedAt: status.confirmedAt ? new Date(status.confirmedAt) : null,
-				eventTimestamp: status.eventTimestamp ? new Date(status.eventTimestamp) : null,
+				eventTimestamp: status.eventTimestamp
+					? new Date(status.eventTimestamp)
+					: null,
 			});
 
 			return {
@@ -75,12 +92,16 @@ export function useTransactionStatus(hash: string | null, options?: { refetchInt
 	return {
 		...query,
 		// Helper function to manually refresh
-		refresh: () => queryClient.invalidateQueries({ queryKey: ["transaction-status", hash] }),
+		refresh: () =>
+			queryClient.invalidateQueries({ queryKey: ["transaction-status", hash] }),
 	};
 }
 
 // Helper hook for transaction by ID
-export function useTransactionStatusById(transactionId: string | null, options?: { refetchInterval?: number }) {
+export function useTransactionStatusById(
+	transactionId: string | null,
+	options?: { refetchInterval?: number },
+) {
 	const queryClient = useQueryClient();
 
 	const query = useQuery<TransactionStatusResponse>({
@@ -95,19 +116,25 @@ export function useTransactionStatusById(transactionId: string | null, options?:
 				};
 			}
 
-			const response = await fetch(`/api/transaction/status?transactionId=${transactionId}`);
+			const response = await fetch(
+				`/api/transaction/status?transactionId=${transactionId}`,
+			);
 			if (!response.ok) {
 				throw new Error("Failed to fetch transaction status");
 			}
 			const data = await response.json();
 
 			// Transform ISO strings back to Date objects
-			const transformStatus = (status: any) => ({
+			const transformStatus = (
+				status: TransactionStatusApiResponse,
+			): TransactionStatus => ({
 				...status,
 				createdAt: status.createdAt ? new Date(status.createdAt) : null,
 				sentAt: status.sentAt ? new Date(status.sentAt) : null,
 				confirmedAt: status.confirmedAt ? new Date(status.confirmedAt) : null,
-				eventTimestamp: status.eventTimestamp ? new Date(status.eventTimestamp) : null,
+				eventTimestamp: status.eventTimestamp
+					? new Date(status.eventTimestamp)
+					: null,
 			});
 
 			return {
@@ -124,6 +151,9 @@ export function useTransactionStatusById(transactionId: string | null, options?:
 
 	return {
 		...query,
-		refresh: () => queryClient.invalidateQueries({ queryKey: ["transaction-status-by-id", transactionId] }),
+		refresh: () =>
+			queryClient.invalidateQueries({
+				queryKey: ["transaction-status-by-id", transactionId],
+			}),
 	};
 }

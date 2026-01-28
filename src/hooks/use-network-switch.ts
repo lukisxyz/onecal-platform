@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { chain } from "@/lib/wagmi";
-import { useEffect } from "react";
 
 export function useNetworkSwitch() {
 	const { chainId, isConnected } = useAccount();

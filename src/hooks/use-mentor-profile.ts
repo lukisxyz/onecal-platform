@@ -17,7 +17,9 @@ interface UseMentorProfileResult {
 	error: Error | null;
 }
 
-export function useMentorProfile(walletAddress: string | undefined): UseMentorProfileResult {
+export function useMentorProfile(
+	walletAddress: string | undefined,
+): UseMentorProfileResult {
 	const query = useQuery({
 		queryKey: ["mentorProfile", walletAddress],
 		queryFn: async (): Promise<MentorProfile> => {
@@ -47,7 +49,9 @@ export function useMentorProfile(walletAddress: string | undefined): UseMentorPr
 	};
 }
 
-export function useMentorProfileByUsername(username: string | undefined): UseMentorProfileResult {
+export function useMentorProfileByUsername(
+	username: string | undefined,
+): UseMentorProfileResult {
 	const query = useQuery({
 		queryKey: ["mentorProfileByUsername", username],
 		queryFn: async (): Promise<MentorProfile> => {

@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { TransactionStatusDisplay } from "@/components/transaction-status-display";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TransactionStatusDisplay } from "@/components/transaction-status-display";
-import { CheckCircle2, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/mentor/registered")({
 	component: MentorRegistered,
@@ -32,8 +32,8 @@ function MentorRegistered() {
 					</h1>
 				</div>
 				<p className="text-lg text-muted-foreground">
-					Your mentor registration has been submitted to the blockchain. Track the
-					transaction status below.
+					Your mentor registration has been submitted to the blockchain. Track
+					the transaction status below.
 				</p>
 			</div>
 

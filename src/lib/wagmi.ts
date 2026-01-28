@@ -1,7 +1,7 @@
 import { type Config, createConfig, http } from "@wagmi/core";
 import { createPublicClient } from "viem";
 import { baseSepolia } from "viem/chains";
-import { coinbaseWallet, injected } from "wagmi/connectors";
+import { injected } from "wagmi/connectors";
 
 export const chain = baseSepolia;
 

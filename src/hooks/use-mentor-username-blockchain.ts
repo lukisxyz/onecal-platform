@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { MENTOR_REGISTRY_ADDRESS, MENTOR_REGISTRY_ABI } from "@/contracts";
+import { MENTOR_REGISTRY_ABI, MENTOR_REGISTRY_ADDRESS } from "@/contracts";
 import { publicClient } from "@/lib/wagmi";
 
 export function useMentorUsernameFromBlockchain(walletAddress: string) {
@@ -26,7 +26,7 @@ export function useMentorUsernameFromBlockchain(walletAddress: string) {
 				}
 
 				return { username, exists };
-			} catch (err) {
+			} catch (_err) {
 				return null;
 			}
 		},

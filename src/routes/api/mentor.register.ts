@@ -6,8 +6,12 @@ import {
 } from "@openzeppelin/relayer-sdk";
 import { createFileRoute } from "@tanstack/react-router";
 import { MENTOR_REGISTRY_ADDRESS } from "@/contracts";
+import {
+	createMentorProfile,
+	getMentorProfile,
+	updateMentorProfile,
+} from "@/lib/mentor-profile.server";
 import { relayerId, relayersApi } from "@/lib/relayer.server";
-import { getMentorProfile, createMentorProfile, updateMentorProfile } from "@/lib/mentor-profile.server";
 
 function delay(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,7 +22,8 @@ export const Route = createFileRoute("/api/mentor/register")({
 		handlers: {
 			POST: async ({ request }) => {
 				try {
-					const { data, username, walletAddress, fullName, bio, timezone } = await request.json();
+					const { data, username, walletAddress, fullName, bio, timezone } =
+						await request.json();
 
 					const networkTransaction: NetworkTransactionRequest = {
 						to: MENTOR_REGISTRY_ADDRESS,
@@ -68,7 +73,10 @@ export const Route = createFileRoute("/api/mentor/register")({
 					// Save or update mentor profile data in database
 					let profileCreated = false;
 					if (username && walletAddress && fullName && timezone) {
-						const existingProfile = await getMentorProfile(walletAddress, username);
+						const existingProfile = await getMentorProfile(
+							walletAddress,
+							username,
+						);
 
 						if (existingProfile) {
 							// Update existing profile

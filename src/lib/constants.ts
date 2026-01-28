@@ -1,6 +1,6 @@
 import type { Address } from "viem";
-import { chain } from "./wagmi";
 import { MENTOR_REGISTRY_ADDRESS } from "@/contracts";
+import { chain } from "./wagmi";
 
 export const domain = {
 	name: "MentorRegistry",

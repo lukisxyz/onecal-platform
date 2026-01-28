@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+	createMentorProfile,
 	getMentorProfileByWallet,
 	updateMentorProfile,
-	createMentorProfile,
 } from "@/lib/mentor-profile.server";
 
 export const Route = createFileRoute("/api/mentor/$walletAddress")({

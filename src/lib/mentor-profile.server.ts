@@ -1,6 +1,6 @@
-import { db } from "./db";
+import { and, eq, isNull } from "drizzle-orm";
 import { mentorProfiles } from "@/db/schemas";
-import { eq, and, isNull } from "drizzle-orm";
+import { db } from "./db";
 
 export interface CreateMentorProfileData {
 	username: string;
@@ -40,7 +40,7 @@ export async function createMentorProfile(data: CreateMentorProfileData) {
 export async function updateMentorProfile(
 	walletAddress: string,
 	username: string,
-	data: UpdateMentorProfileData
+	data: UpdateMentorProfileData,
 ) {
 	const result = await db
 		.update(mentorProfiles)
@@ -54,8 +54,8 @@ export async function updateMentorProfile(
 			and(
 				eq(mentorProfiles.walletAddress, walletAddress),
 				eq(mentorProfiles.username, username),
-				isNull(mentorProfiles.deletedAt)
-			)
+				isNull(mentorProfiles.deletedAt),
+			),
 		)
 		.returning();
 
@@ -65,7 +65,10 @@ export async function updateMentorProfile(
 /**
  * Get mentor profile by wallet address and username
  */
-export async function getMentorProfile(walletAddress: string, username: string) {
+export async function getMentorProfile(
+	walletAddress: string,
+	username: string,
+) {
 	const result = await db
 		.select()
 		.from(mentorProfiles)
@@ -73,8 +76,8 @@ export async function getMentorProfile(walletAddress: string, username: string) 
 			and(
 				eq(mentorProfiles.walletAddress, walletAddress),
 				eq(mentorProfiles.username, username),
-				isNull(mentorProfiles.deletedAt)
-			)
+				isNull(mentorProfiles.deletedAt),
+			),
 		)
 		.limit(1);
 
@@ -91,8 +94,8 @@ export async function getMentorProfileByWallet(walletAddress: string) {
 		.where(
 			and(
 				eq(mentorProfiles.walletAddress, walletAddress),
-				isNull(mentorProfiles.deletedAt)
-			)
+				isNull(mentorProfiles.deletedAt),
+			),
 		)
 		.limit(1);
 
@@ -109,8 +112,8 @@ export async function getMentorProfileByUsername(username: string) {
 		.where(
 			and(
 				eq(mentorProfiles.username, username),
-				isNull(mentorProfiles.deletedAt)
-			)
+				isNull(mentorProfiles.deletedAt),
+			),
 		)
 		.limit(1);
 
@@ -120,7 +123,10 @@ export async function getMentorProfileByUsername(username: string) {
 /**
  * Soft delete a mentor profile
  */
-export async function softDeleteMentorProfile(walletAddress: string, username: string) {
+export async function softDeleteMentorProfile(
+	walletAddress: string,
+	username: string,
+) {
 	const result = await db
 		.update(mentorProfiles)
 		.set({
@@ -131,8 +137,8 @@ export async function softDeleteMentorProfile(walletAddress: string, username: s
 			and(
 				eq(mentorProfiles.walletAddress, walletAddress),
 				eq(mentorProfiles.username, username),
-				isNull(mentorProfiles.deletedAt)
-			)
+				isNull(mentorProfiles.deletedAt),
+			),
 		)
 		.returning();
 

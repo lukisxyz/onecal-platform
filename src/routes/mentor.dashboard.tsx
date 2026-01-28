@@ -1,10 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Clock, FileText, Loader2, User } from "lucide-react";
 import { useAccount } from "wagmi";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, User, Clock, FileText } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
 import { useMentorProfile } from "@/hooks/use-mentor-profile";
 
 export const Route = createFileRoute("/mentor/dashboard")({
@@ -23,7 +22,11 @@ export const Route = createFileRoute("/mentor/dashboard")({
 function MentorDashboard() {
 	const { address, isConnected } = useAccount();
 	const nav = useNavigate();
-	const { data: profile, isLoading: loading, error } = useMentorProfile(address);
+	const {
+		data: profile,
+		isLoading: loading,
+		error,
+	} = useMentorProfile(address);
 
 	// Redirect to registration if wallet not connected
 	if (!isConnected) {
@@ -189,7 +192,10 @@ function MentorDashboard() {
 				</CardHeader>
 				<CardContent>
 					<div className="flex flex-wrap gap-3">
-						<Button variant="outline" onClick={() => nav({ to: "/mentor/register" })}>
+						<Button
+							variant="outline"
+							onClick={() => nav({ to: "/mentor/register" })}
+						>
 							Update Profile
 						</Button>
 						<Button variant="outline" disabled>

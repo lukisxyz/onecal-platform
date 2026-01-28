@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Clock, Loader2, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, User, Clock, ExternalLink } from "lucide-react";
 import { useMentorProfileByUsername } from "@/hooks/use-mentor-profile";
 
 export const Route = createFileRoute("/m/$username")({

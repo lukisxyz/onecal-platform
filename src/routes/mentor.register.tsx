@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { NetworkSwitchPrompt } from "@/components/network-switch-prompt";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
 	SelectContent,
@@ -14,12 +14,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useRegisterMentor } from "@/hooks/use-register-mentor";
-import { NetworkSwitchPrompt } from "@/components/network-switch-prompt";
+import { Textarea } from "@/components/ui/textarea";
 import { TIMEZONES } from "@/constants/timezones";
-import { MENTOR_REGISTRY_ADDRESS, MENTOR_REGISTRY_ABI } from "@/contracts";
+import { MENTOR_REGISTRY_ABI, MENTOR_REGISTRY_ADDRESS } from "@/contracts";
+import { useRegisterMentor } from "@/hooks/use-register-mentor";
 import { publicClient } from "@/lib/wagmi";
-import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/mentor/register")({
 	component: MentorRegister,
@@ -83,7 +82,7 @@ function MentorRegister() {
 					nav({ to: `/mentor/${address}/update` });
 					return;
 				}
-			} catch (err) {
+			} catch (_err) {
 				// Continue to registration form if check fails
 			} finally {
 				setCheckingRegistration(false);
@@ -175,7 +174,9 @@ function MentorRegister() {
 					<CardContent className="flex items-center justify-center py-8">
 						<div className="text-center">
 							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-							<p className="text-muted-foreground">Checking registration status...</p>
+							<p className="text-muted-foreground">
+								Checking registration status...
+							</p>
 						</div>
 					</CardContent>
 				</Card>
@@ -183,144 +184,144 @@ function MentorRegister() {
 
 			{!checkingRegistration && (
 				<Card>
-				<CardHeader>
-					<CardTitle>Mentor Information</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-6">
-						<div className="space-y-2">
-							<Label htmlFor="fullName">Full Name</Label>
-							<p className="text-sm text-muted-foreground">
-								Your real name or display name
-							</p>
-							<Input
-								id="fullName"
-								type="text"
-								placeholder="e.g., John Doe"
-								value={fullName}
-								onChange={(e) => setFullName(e.target.value)}
-								onBlur={handleFullNameBlur}
-								required
-							/>
-							<p className="text-xs text-muted-foreground">
-								Username will be auto-generated from your full name
-							</p>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="username">Username</Label>
-							<p className="text-sm text-muted-foreground">
-								Use letters, numbers, and underscores only
-							</p>
-							<Input
-								id="username"
-								type="text"
-								placeholder="e.g., john_doe_1234"
-								value={username}
-								onChange={(e) => setUsername(e.target.value)}
-								required
-							/>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="bio">Bio</Label>
-							<p className="text-sm text-muted-foreground">
-								Tell us about yourself and your expertise (optional)
-							</p>
-							<Textarea
-								id="bio"
-								placeholder="e.g., Blockchain developer with 5 years of experience..."
-								value={bio}
-								onChange={(e) => setBio(e.target.value)}
-								rows={4}
-								maxLength={500}
-							/>
-							<p className="text-xs text-muted-foreground">
-								{bio.length}/500 characters
-							</p>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="timezone">Timezone</Label>
-							<p className="text-sm text-muted-foreground">
-								Your preferred timezone for scheduling sessions
-							</p>
-							<Select value={timezone} onValueChange={setTimezone} required>
-								<SelectTrigger>
-									<SelectValue placeholder="Select your timezone" />
-								</SelectTrigger>
-								<SelectContent>
-									<div className="px-2 py-1">
-										<Input
-											type="text"
-											placeholder="Search timezone..."
-											value={timezoneSearch}
-											onChange={(e) => setTimezoneSearch(e.target.value)}
-											className="h-8"
-										/>
-									</div>
-									{filteredTimezones.map((tz) => (
-										<SelectItem key={tz.value} value={tz.value}>
-											{tz.label}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="address">Mentor Address</Label>
-							<p className="text-sm text-muted-foreground">
-								Automatically populated from your connected wallet
-							</p>
-							<div className="flex gap-2">
+					<CardHeader>
+						<CardTitle>Mentor Information</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<form onSubmit={handleSubmit} className="space-y-6">
+							<div className="space-y-2">
+								<Label htmlFor="fullName">Full Name</Label>
+								<p className="text-sm text-muted-foreground">
+									Your real name or display name
+								</p>
 								<Input
-									id="address"
+									id="fullName"
 									type="text"
-									value={mentorAddress}
-									disabled
+									placeholder="e.g., John Doe"
+									value={fullName}
+									onChange={(e) => setFullName(e.target.value)}
+									onBlur={handleFullNameBlur}
 									required
-									className="flex-1 bg-muted"
 								/>
-								{!isConnected ? (
-									<Button
-										type="button"
-										variant="outline"
-										onClick={handleConnectWallet}
-										disabled={isConnecting}
-									>
-										{isConnecting ? "Connecting..." : "Connect Wallet"}
-									</Button>
-								) : (
-									<Button
-										type="button"
-										variant="outline"
-										onClick={handleSwitchWallet}
-										disabled={isLoading}
-									>
-										Switch Wallet
-									</Button>
-								)}
+								<p className="text-xs text-muted-foreground">
+									Username will be auto-generated from your full name
+								</p>
 							</div>
-						</div>
 
-						{error && (
-							<div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-3">
-								{error}
+							<div className="space-y-2">
+								<Label htmlFor="username">Username</Label>
+								<p className="text-sm text-muted-foreground">
+									Use letters, numbers, and underscores only
+								</p>
+								<Input
+									id="username"
+									type="text"
+									placeholder="e.g., john_doe_1234"
+									value={username}
+									onChange={(e) => setUsername(e.target.value)}
+									required
+								/>
 							</div>
-						)}
 
-						<Button
-							type="submit"
-							className="w-full"
-							size="lg"
-							disabled={isLoading || !isFormValid}
-						>
-							{isLoading ? "Registering..." : "Register as Mentor"}
-						</Button>
-					</form>
-				</CardContent>
-			</Card>
+							<div className="space-y-2">
+								<Label htmlFor="bio">Bio</Label>
+								<p className="text-sm text-muted-foreground">
+									Tell us about yourself and your expertise (optional)
+								</p>
+								<Textarea
+									id="bio"
+									placeholder="e.g., Blockchain developer with 5 years of experience..."
+									value={bio}
+									onChange={(e) => setBio(e.target.value)}
+									rows={4}
+									maxLength={500}
+								/>
+								<p className="text-xs text-muted-foreground">
+									{bio.length}/500 characters
+								</p>
+							</div>
+
+							<div className="space-y-2">
+								<Label htmlFor="timezone">Timezone</Label>
+								<p className="text-sm text-muted-foreground">
+									Your preferred timezone for scheduling sessions
+								</p>
+								<Select value={timezone} onValueChange={setTimezone} required>
+									<SelectTrigger>
+										<SelectValue placeholder="Select your timezone" />
+									</SelectTrigger>
+									<SelectContent>
+										<div className="px-2 py-1">
+											<Input
+												type="text"
+												placeholder="Search timezone..."
+												value={timezoneSearch}
+												onChange={(e) => setTimezoneSearch(e.target.value)}
+												className="h-8"
+											/>
+										</div>
+										{filteredTimezones.map((tz) => (
+											<SelectItem key={tz.value} value={tz.value}>
+												{tz.label}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+
+							<div className="space-y-2">
+								<Label htmlFor="address">Mentor Address</Label>
+								<p className="text-sm text-muted-foreground">
+									Automatically populated from your connected wallet
+								</p>
+								<div className="flex gap-2">
+									<Input
+										id="address"
+										type="text"
+										value={mentorAddress}
+										disabled
+										required
+										className="flex-1 bg-muted"
+									/>
+									{!isConnected ? (
+										<Button
+											type="button"
+											variant="outline"
+											onClick={handleConnectWallet}
+											disabled={isConnecting}
+										>
+											{isConnecting ? "Connecting..." : "Connect Wallet"}
+										</Button>
+									) : (
+										<Button
+											type="button"
+											variant="outline"
+											onClick={handleSwitchWallet}
+											disabled={isLoading}
+										>
+											Switch Wallet
+										</Button>
+									)}
+								</div>
+							</div>
+
+							{error && (
+								<div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-3">
+									{error}
+								</div>
+							)}
+
+							<Button
+								type="submit"
+								className="w-full"
+								size="lg"
+								disabled={isLoading || !isFormValid}
+							>
+								{isLoading ? "Registering..." : "Register as Mentor"}
+							</Button>
+						</form>
+					</CardContent>
+				</Card>
 			)}
 		</div>
 	);

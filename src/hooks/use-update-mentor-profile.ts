@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface MentorProfile {
@@ -49,7 +49,10 @@ export function useMentorProfile(walletAddress: string | undefined) {
 	};
 }
 
-export function useUpdateMentorProfile(walletAddress: string | undefined, username: string | undefined) {
+export function useUpdateMentorProfile(
+	walletAddress: string | undefined,
+	username: string | undefined,
+) {
 	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
@@ -79,7 +82,9 @@ export function useUpdateMentorProfile(walletAddress: string | undefined, userna
 		},
 		onSuccess: () => {
 			// Invalidate and refetch the profile query
-			queryClient.invalidateQueries({ queryKey: ["mentorProfile", walletAddress] });
+			queryClient.invalidateQueries({
+				queryKey: ["mentorProfile", walletAddress],
+			});
 			toast.success("Profile updated successfully!");
 		},
 		onError: (error: Error) => {

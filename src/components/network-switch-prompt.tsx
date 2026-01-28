@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useNetworkSwitch } from "@/hooks/use-network-switch";
 
 export function NetworkSwitchPrompt() {
-	const { needsSwitch, isPending, switchToCorrectNetwork, expectedChainId } = useNetworkSwitch();
+	const { needsSwitch, isPending, switchToCorrectNetwork, expectedChainId } =
+		useNetworkSwitch();
 
 	if (!needsSwitch) return null;
 
@@ -16,7 +17,8 @@ export function NetworkSwitchPrompt() {
 						Wrong Network Detected
 					</h3>
 					<p className="text-sm text-yellow-800 mb-3">
-						This app requires network chain ID {expectedChainId}. Please switch your network in MetaMask to continue.
+						This app requires network chain ID {expectedChainId}. Please switch
+						your network in MetaMask to continue.
 					</p>
 					<Button
 						size="sm"

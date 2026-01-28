@@ -1,11 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
+import { signTypedData } from "@wagmi/core";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { type Address, encodeFunctionData } from "viem";
 import { useAccount } from "wagmi";
+import { MENTOR_REGISTRY_ABI, MENTOR_REGISTRY_ADDRESS } from "@/contracts";
 import { domain as baseDomain, mentorRegisterTypes } from "@/lib/constants";
-import { MENTOR_REGISTRY_ADDRESS, MENTOR_REGISTRY_ABI } from "@/contracts";
-import { signTypedData } from "@wagmi/core";
 import { config, publicClient } from "@/lib/wagmi";
 
 type RegisterMentorParams = {
@@ -23,7 +23,10 @@ type HookReturn = {
 };
 
 // Validate username format: snake_case (lowercase + underscores) + alphanumeric only
-function validateUsername(username: string): { isValid: boolean; error?: string } {
+function validateUsername(username: string): {
+	isValid: boolean;
+	error?: string;
+} {
 	if (!username || username.length === 0) {
 		return { isValid: false, error: "Username is required" };
 	}
@@ -105,7 +108,10 @@ export function useRegisterMentor(): HookReturn {
 						boolean,
 					];
 
-					if (exists && existingAddress.toLowerCase() === userAddress.toLowerCase()) {
+					if (
+						exists &&
+						existingAddress.toLowerCase() === userAddress.toLowerCase()
+					) {
 						// Same wallet - redirect to dashboard after delay
 						toast.info(
 							"You are already registered with this username. Redirecting to dashboard in 3 seconds...",
@@ -125,7 +131,9 @@ export function useRegisterMentor(): HookReturn {
 				}
 
 				// Step 3: Username doesn't exist - check if wallet is already registered
-				toast.info("Username available. Checking wallet registration status...");
+				toast.info(
+					"Username available. Checking wallet registration status...",
+				);
 				const walletRegistration = await publicClient.readContract({
 					address: MENTOR_REGISTRY_ADDRESS,
 					abi: MENTOR_REGISTRY_ABI,
@@ -220,8 +228,9 @@ export function useRegisterMentor(): HookReturn {
 				if (result.id) {
 					nav({ to: `/mentor/registered?tx=${result.id}` });
 				}
-			} catch (err: any) {
-				const errorMessage = err?.message || "An unexpected error occurred";
+			} catch (err: unknown) {
+				const errorMessage =
+					err instanceof Error ? err.message : "An unexpected error occurred";
 				setError(errorMessage);
 				toast.error(errorMessage);
 			} finally {

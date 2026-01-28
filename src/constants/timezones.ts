@@ -138,7 +138,10 @@ export const TIMEZONES: TimezoneOption[] = [
 	{ label: "America/La_Paz (BOT)", value: "America/La_Paz" },
 	{ label: "America/Caracas (VET)", value: "America/Caracas" },
 	{ label: "America/Santiago (CLST)", value: "America/Santiago" },
-	{ label: "America/Argentina/Buenos_Aires (ART)", value: "America/Argentina/Buenos_Aires" },
+	{
+		label: "America/Argentina/Buenos_Aires (ART)",
+		value: "America/Argentina/Buenos_Aires",
+	},
 	{ label: "America/Sao_Paulo (BRT)", value: "America/Sao_Paulo" },
 	{ label: "America/Montevideo (UYT)", value: "America/Montevideo" },
 	{ label: "America/Paramaribo (SRT)", value: "America/Paramaribo" },
@@ -197,7 +200,10 @@ export const TIMEZONES: TimezoneOption[] = [
 	// Antarctica
 	{ label: "Antarctica/Casey (AWST)", value: "Antarctica/Casey" },
 	{ label: "Antarctica/Davis (DAVT)", value: "Antarctica/Davis" },
-	{ label: "Antarctica/DumontDUrville (DDUT)", value: "Antarctica/DumontDUrville" },
+	{
+		label: "Antarctica/DumontDUrville (DDUT)",
+		value: "Antarctica/DumontDUrville",
+	},
 	{ label: "Antarctica/Mawson (MAWT)", value: "Antarctica/Mawson" },
 	{ label: "Antarctica/McMurdo (NZDT)", value: "Antarctica/McMurdo" },
 	{ label: "Antarctica/Palmer (CLST)", value: "Antarctica/Palmer" },
