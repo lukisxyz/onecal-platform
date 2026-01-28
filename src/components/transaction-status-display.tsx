@@ -58,7 +58,6 @@ export function TransactionStatusDisplay({ hash, showHistory = true }: Props) {
 	}
 
 	if (error) {
-		console.error("Error:", error);
 		return (
 			<Card>
 				<CardContent className="pt-6">

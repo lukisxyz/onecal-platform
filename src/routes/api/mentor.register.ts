@@ -7,6 +7,7 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { MENTOR_REGISTRY_ADDRESS } from "@/contracts";
 import { relayerId, relayersApi } from "@/lib/relayer.server";
+import { getMentorProfile, createMentorProfile, updateMentorProfile } from "@/lib/mentor-profile.server";
 
 function delay(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/api/mentor/register")({
 		handlers: {
 			POST: async ({ request }) => {
 				try {
-					const { data } = await request.json();
+					const { data, username, walletAddress, fullName, bio, timezone } = await request.json();
 
 					const networkTransaction: NetworkTransactionRequest = {
 						to: MENTOR_REGISTRY_ADDRESS,
@@ -64,16 +65,41 @@ export const Route = createFileRoute("/api/mentor/register")({
 
 					const { status, confirmed_at, created_at } = resData;
 
+					// Save or update mentor profile data in database
+					let profileCreated = false;
+					if (username && walletAddress && fullName && timezone) {
+						const existingProfile = await getMentorProfile(walletAddress, username);
+
+						if (existingProfile) {
+							// Update existing profile
+							await updateMentorProfile(walletAddress, username, {
+								fullName,
+								bio,
+								timezone,
+							});
+							profileCreated = false;
+						} else {
+							// Create new profile
+							await createMentorProfile({
+								username,
+								walletAddress,
+								fullName,
+								bio,
+								timezone,
+							});
+							profileCreated = true;
+						}
+					}
+
 					return Response.json({
 						id: hash,
 						txId,
 						status,
 						confirmed_at,
 						created_at,
+						profileCreated,
 					});
 				} catch (err: unknown) {
-					console.error("Mentor registration error:", err);
-
 					// Try to extract meaningful error message
 					let errorMessage = "Failed to register mentor";
 

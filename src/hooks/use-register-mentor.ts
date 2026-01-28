@@ -11,6 +11,9 @@ import { config, publicClient } from "@/lib/wagmi";
 type RegisterMentorParams = {
 	username: string;
 	mentorAddress: Address;
+	fullName: string;
+	bio?: string;
+	timezone: string;
 };
 
 type HookReturn = {
@@ -18,6 +21,26 @@ type HookReturn = {
 	error: string | null;
 	registerMentor: (params: RegisterMentorParams) => Promise<void>;
 };
+
+// Validate username format: snake_case (lowercase + underscores) + alphanumeric only
+function validateUsername(username: string): { isValid: boolean; error?: string } {
+	if (!username || username.length === 0) {
+		return { isValid: false, error: "Username is required" };
+	}
+
+	// Check if only contains lowercase letters, numbers, and underscores
+	const snakeCaseRegex = /^[a-z0-9_]+$/;
+
+	if (!snakeCaseRegex.test(username)) {
+		return {
+			isValid: false,
+			error:
+				"Username must be snake_case (lowercase) and contain only letters (a-z), numbers (0-9), and underscores (_)",
+		};
+	}
+
+	return { isValid: true };
+}
 
 export function useRegisterMentor(): HookReturn {
 	const nav = useNavigate();
@@ -39,7 +62,7 @@ export function useRegisterMentor(): HookReturn {
 			setError(null);
 
 			try {
-				const { username, mentorAddress } = params;
+				const { username, mentorAddress, fullName, bio, timezone } = params;
 
 				if (mentorAddress.toLowerCase() !== userAddress.toLowerCase()) {
 					throw new Error(
@@ -47,9 +70,91 @@ export function useRegisterMentor(): HookReturn {
 					);
 				}
 
-				const deadline = BigInt(Math.floor(Date.now() / 1000) + 600);
+				// Step 1: Validate username format
+				toast.info("Validating username format...");
+				const validation = validateUsername(username);
 
+				if (!validation.isValid) {
+					setError(validation.error || "Invalid username format");
+					toast.error(validation.error || "Invalid username format");
+					return;
+				}
+
+				// Step 2: Check if username exists
+				toast.info("Checking username availability...");
+				const usernameExists = await publicClient.readContract({
+					address: MENTOR_REGISTRY_ADDRESS,
+					abi: MENTOR_REGISTRY_ABI,
+					functionName: "usernameExists",
+					args: [username],
+				});
+
+				if (usernameExists) {
+					// Username exists - check if it belongs to this wallet
+					toast.info("Username already exists. Checking wallet address...");
+					const existingMentor = await publicClient.readContract({
+						address: MENTOR_REGISTRY_ADDRESS,
+						abi: MENTOR_REGISTRY_ABI,
+						functionName: "getMentor",
+						args: [username],
+					});
+
+					const [, existingAddress, exists] = existingMentor as [
+						string,
+						Address,
+						boolean,
+					];
+
+					if (exists && existingAddress.toLowerCase() === userAddress.toLowerCase()) {
+						// Same wallet - redirect to dashboard after delay
+						toast.info(
+							"You are already registered with this username. Redirecting to dashboard in 3 seconds...",
+						);
+						setTimeout(() => {
+							nav({ to: "/mentor/dashboard" });
+						}, 3000);
+						return;
+					} else {
+						// Different wallet - show error
+						const errorMsg =
+							"Username already taken by another wallet. Please use a different username.";
+						setError(errorMsg);
+						toast.error(errorMsg);
+						return;
+					}
+				}
+
+				// Step 3: Username doesn't exist - check if wallet is already registered
+				toast.info("Username available. Checking wallet registration status...");
+				const walletRegistration = await publicClient.readContract({
+					address: MENTOR_REGISTRY_ADDRESS,
+					abi: MENTOR_REGISTRY_ABI,
+					functionName: "getMentorByAddress",
+					args: [userAddress],
+				});
+
+				const [, , walletExists] = walletRegistration as [
+					string,
+					Address,
+					boolean,
+				];
+
+				if (walletExists) {
+					// Wallet is already registered with a different username
+					toast.info(
+						"This wallet is already registered with a different username. Redirecting to dashboard in 3 seconds...",
+					);
+					setTimeout(() => {
+						nav({ to: "/mentor/dashboard" });
+					}, 3000);
+					return;
+				}
+
+				// Step 4: Proceed with registration
+				toast.success("Username available. Proceeding with registration...");
 				toast.info("Checking network status and nonce...");
+
+				const deadline = BigInt(Math.floor(Date.now() / 1000) + 600);
 
 				const nonce = await publicClient.readContract({
 					address: MENTOR_REGISTRY_ADDRESS,
@@ -95,7 +200,10 @@ export function useRegisterMentor(): HookReturn {
 					body: JSON.stringify({
 						data,
 						username,
-						mentorAddress,
+						walletAddress: mentorAddress,
+						fullName,
+						bio,
+						timezone,
 					}),
 				});
 
@@ -116,7 +224,6 @@ export function useRegisterMentor(): HookReturn {
 				const errorMessage = err?.message || "An unexpected error occurred";
 				setError(errorMessage);
 				toast.error(errorMessage);
-				console.error("Registration error:", err);
 			} finally {
 				setIsLoading(false);
 			}

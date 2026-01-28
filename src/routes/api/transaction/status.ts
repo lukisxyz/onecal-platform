@@ -59,7 +59,6 @@ export const Route = createFileRoute("/api/transaction/status")({
 						count: statuses.length,
 					});
 				} catch (err: unknown) {
-					console.error("Get transaction status error:", err);
 					return new Response(
 						JSON.stringify({ error: "Failed to get transaction status" }),
 						{ status: 500 },

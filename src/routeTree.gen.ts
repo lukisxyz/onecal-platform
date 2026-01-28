@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MentorRegisteredRouteImport } from './routes/mentor.registered'
 import { Route as MentorRegisterRouteImport } from './routes/mentor.register'
+import { Route as MentorDashboardRouteImport } from './routes/mentor.dashboard'
+import { Route as MentorWalletAddressUpdateRouteImport } from './routes/mentor.$walletAddress.update'
 import { Route as ApiTransactionStatusRouteImport } from './routes/api/transaction/status'
 import { Route as ApiRelayerWebhookRouteImport } from './routes/api/relayer.webhook'
 import { Route as ApiMentorRegisterRouteImport } from './routes/api/mentor.register'
+import { Route as ApiMentorWalletAddressRouteImport } from './routes/api/mentor.$walletAddress'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -31,6 +34,17 @@ const MentorRegisterRoute = MentorRegisterRouteImport.update({
   path: '/mentor/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentorDashboardRoute = MentorDashboardRouteImport.update({
+  id: '/mentor/dashboard',
+  path: '/mentor/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorWalletAddressUpdateRoute =
+  MentorWalletAddressUpdateRouteImport.update({
+    id: '/mentor/$walletAddress/update',
+    path: '/mentor/$walletAddress/update',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiTransactionStatusRoute = ApiTransactionStatusRouteImport.update({
   id: '/api/transaction/status',
   path: '/api/transaction/status',
@@ -46,66 +60,92 @@ const ApiMentorRegisterRoute = ApiMentorRegisterRouteImport.update({
   path: '/api/mentor/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMentorWalletAddressRoute = ApiMentorWalletAddressRouteImport.update({
+  id: '/api/mentor/$walletAddress',
+  path: '/api/mentor/$walletAddress',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/mentor/dashboard': typeof MentorDashboardRoute
   '/mentor/register': typeof MentorRegisterRoute
   '/mentor/registered': typeof MentorRegisteredRoute
+  '/api/mentor/$walletAddress': typeof ApiMentorWalletAddressRoute
   '/api/mentor/register': typeof ApiMentorRegisterRoute
   '/api/relayer/webhook': typeof ApiRelayerWebhookRoute
   '/api/transaction/status': typeof ApiTransactionStatusRoute
+  '/mentor/$walletAddress/update': typeof MentorWalletAddressUpdateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/mentor/dashboard': typeof MentorDashboardRoute
   '/mentor/register': typeof MentorRegisterRoute
   '/mentor/registered': typeof MentorRegisteredRoute
+  '/api/mentor/$walletAddress': typeof ApiMentorWalletAddressRoute
   '/api/mentor/register': typeof ApiMentorRegisterRoute
   '/api/relayer/webhook': typeof ApiRelayerWebhookRoute
   '/api/transaction/status': typeof ApiTransactionStatusRoute
+  '/mentor/$walletAddress/update': typeof MentorWalletAddressUpdateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/mentor/dashboard': typeof MentorDashboardRoute
   '/mentor/register': typeof MentorRegisterRoute
   '/mentor/registered': typeof MentorRegisteredRoute
+  '/api/mentor/$walletAddress': typeof ApiMentorWalletAddressRoute
   '/api/mentor/register': typeof ApiMentorRegisterRoute
   '/api/relayer/webhook': typeof ApiRelayerWebhookRoute
   '/api/transaction/status': typeof ApiTransactionStatusRoute
+  '/mentor/$walletAddress/update': typeof MentorWalletAddressUpdateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/mentor/dashboard'
     | '/mentor/register'
     | '/mentor/registered'
+    | '/api/mentor/$walletAddress'
     | '/api/mentor/register'
     | '/api/relayer/webhook'
     | '/api/transaction/status'
+    | '/mentor/$walletAddress/update'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/mentor/dashboard'
     | '/mentor/register'
     | '/mentor/registered'
+    | '/api/mentor/$walletAddress'
     | '/api/mentor/register'
     | '/api/relayer/webhook'
     | '/api/transaction/status'
+    | '/mentor/$walletAddress/update'
   id:
     | '__root__'
     | '/'
+    | '/mentor/dashboard'
     | '/mentor/register'
     | '/mentor/registered'
+    | '/api/mentor/$walletAddress'
     | '/api/mentor/register'
     | '/api/relayer/webhook'
     | '/api/transaction/status'
+    | '/mentor/$walletAddress/update'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MentorDashboardRoute: typeof MentorDashboardRoute
   MentorRegisterRoute: typeof MentorRegisterRoute
   MentorRegisteredRoute: typeof MentorRegisteredRoute
+  ApiMentorWalletAddressRoute: typeof ApiMentorWalletAddressRoute
   ApiMentorRegisterRoute: typeof ApiMentorRegisterRoute
   ApiRelayerWebhookRoute: typeof ApiRelayerWebhookRoute
   ApiTransactionStatusRoute: typeof ApiTransactionStatusRoute
+  MentorWalletAddressUpdateRoute: typeof MentorWalletAddressUpdateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -131,6 +171,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MentorRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentor/dashboard': {
+      id: '/mentor/dashboard'
+      path: '/mentor/dashboard'
+      fullPath: '/mentor/dashboard'
+      preLoaderRoute: typeof MentorDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentor/$walletAddress/update': {
+      id: '/mentor/$walletAddress/update'
+      path: '/mentor/$walletAddress/update'
+      fullPath: '/mentor/$walletAddress/update'
+      preLoaderRoute: typeof MentorWalletAddressUpdateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/transaction/status': {
       id: '/api/transaction/status'
       path: '/api/transaction/status'
@@ -152,16 +206,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMentorRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mentor/$walletAddress': {
+      id: '/api/mentor/$walletAddress'
+      path: '/api/mentor/$walletAddress'
+      fullPath: '/api/mentor/$walletAddress'
+      preLoaderRoute: typeof ApiMentorWalletAddressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MentorDashboardRoute: MentorDashboardRoute,
   MentorRegisterRoute: MentorRegisterRoute,
   MentorRegisteredRoute: MentorRegisteredRoute,
+  ApiMentorWalletAddressRoute: ApiMentorWalletAddressRoute,
   ApiMentorRegisterRoute: ApiMentorRegisterRoute,
   ApiRelayerWebhookRoute: ApiRelayerWebhookRoute,
   ApiTransactionStatusRoute: ApiTransactionStatusRoute,
+  MentorWalletAddressUpdateRoute: MentorWalletAddressUpdateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
