@@ -46,3 +46,33 @@ export function useMentorProfile(walletAddress: string | undefined): UseMentorPr
 		error: query.error as Error | null,
 	};
 }
+
+export function useMentorProfileByUsername(username: string | undefined): UseMentorProfileResult {
+	const query = useQuery({
+		queryKey: ["mentorProfileByUsername", username],
+		queryFn: async (): Promise<MentorProfile> => {
+			if (!username) {
+				throw new Error("Username is required");
+			}
+
+			const response = await fetch(`/api/mentor-by-username/${username}`);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				const errorMessage = errorData.error || "Failed to fetch profile";
+				throw new Error(errorMessage);
+			}
+
+			return response.json();
+		},
+		enabled: !!username,
+		staleTime: 5 * 60 * 1000, // 5 minutes
+		retry: 2,
+	});
+
+	return {
+		data: query.data || null,
+		isLoading: query.isLoading,
+		error: query.error as Error | null,
+	};
+}

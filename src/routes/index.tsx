@@ -23,7 +23,7 @@ function GetStartedButton() {
 	return (
 		<Button
 			size="lg"
-			className="w-full sm:w-auto text-lg rounded-full px-6 py-4 md:px-12 md:py-7 font-semibold min-h-12 touch-manipulation"
+			className="w-full sm:w-auto rounded-full! text-xl px-8 py-5 md:px-12 md:py-7 font-semibold min-h-14 touch-manipulation"
 			onClick={() => {
 				navigate({ to: "/mentor/register" });
 			}}

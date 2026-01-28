@@ -100,6 +100,24 @@ export async function getMentorProfileByWallet(walletAddress: string) {
 }
 
 /**
+ * Get mentor profile by username only
+ */
+export async function getMentorProfileByUsername(username: string) {
+	const result = await db
+		.select()
+		.from(mentorProfiles)
+		.where(
+			and(
+				eq(mentorProfiles.username, username),
+				isNull(mentorProfiles.deletedAt)
+			)
+		)
+		.limit(1);
+
+	return result[0] || null;
+}
+
+/**
  * Soft delete a mentor profile
  */
 export async function softDeleteMentorProfile(walletAddress: string, username: string) {
